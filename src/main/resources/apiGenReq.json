@@ -1,0 +1,76 @@
+{
+    "configurations": {
+        "apiGateway": false,
+        "namingServer": false,
+        "keycloak": false,
+        "springSecurity": false,
+        "springCloudConfig": false,
+		"zipkin": true,
+		"actuator": true
+    },
+    "domains": [
+        {
+            "name": "",
+            "classes": [
+                {
+                    "name": "",
+					"abstract": false,
+					"type": "class",
+                    "noArgsConstructor": true,
+                    "fieldsConstructor": true,
+                    "accessModifier": "public",
+					"extends": "BaseEntity",
+					"implements": ["Serializable"],
+					"fields": [
+                        {
+                            "name": "",
+                            "type": "",
+                            "static": false,
+                            "final": false,
+                            "accessModifier": "public",
+                            "get": true,
+                            "set": true
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "",
+                            "returnType": "",
+							"accessModifier": "public",
+							"static": false,
+                            "final": false,
+							"throws": ["IllegalArgumentException"],
+							"inputVariables": [
+                                {
+                                    "name": "",
+                                    "type": ""
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "name": "",
+            "firstClassName": "",
+            "secondClassName": "",
+            "relationType": "oneToOne",
+			"bidirectional": true,
+			"foreignKey": "order_id",
+            "fields": [
+                {
+                    "name": "",
+                    "type": "",
+                    "static": false,
+                    "final": false,
+                    "accessModifier": "public",
+                    "get": true,
+                    "set": true
+                }
+            ]
+        }
+    ]
+}
