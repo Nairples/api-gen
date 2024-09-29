@@ -1,2 +1,2 @@
-# Springboot-Empty-Project
-Springboot-Empty-Project
+# API GEN
+Api Generator
