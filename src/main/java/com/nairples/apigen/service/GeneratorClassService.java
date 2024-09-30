@@ -18,50 +18,50 @@ import com.nairples.apigen.model.Method;
 
 @Component
 public class GeneratorClassService {
-	
+
 	public void generateClass(ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
-		
+
 		ArrayList<FieldSpec> fields = new ArrayList<>();
-		if(classDefinition.getFields() != null ) {
-			for (Field field: classDefinition.getFields()) {
-				field.getName();
+		if (classDefinition.getFields() != null) {
+			for (Field field : classDefinition.getFields()) {
 				FieldSpec fieldSpec = FieldSpec.builder(Class.forName(field.getType()), field.getName()).build();
 				fields.add(fieldSpec);
 			}
 		}
-		
-		ArrayList<MethodSpec> methods = new ArrayList<>();
-		if(classDefinition.getMethods() != null) {
-			for (Method method: classDefinition.getMethods()) {
 
-		        MethodSpec mSpec = MethodSpec.methodBuilder(method.getName())
-		                .addModifiers(Modifier.PUBLIC)
-		                .returns(Class.forName(method.getReturnType()))
-		                .addCode("return null;\n")
-		                .build();
-		        
-		        methods.add(mSpec);
+		ArrayList<MethodSpec> methods = new ArrayList<>();
+		if (classDefinition.getMethods() != null) {
+			for (Method method : classDefinition.getMethods()) {
+				MethodSpec mSpec = MethodSpec.methodBuilder(method.getName())
+						.addModifiers(Modifier.PUBLIC)
+						.returns(Class.forName(method.getReturnType()))
+						.addCode("return null;\n")
+						.build();
+
+				methods.add(mSpec);
 			}
 		}
-		
-		
-		TypeSpec definedClass = TypeSpec.classBuilder(classDefinition.getName())
-                .addModifiers(Modifier.PUBLIC)
-                .build();
-		
-		for(FieldSpec fs: fields) {
-			definedClass = definedClass
-					.toBuilder()
-					.addField(fs)
-					.build();
-			
+
+		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName())
+				.addModifiers(Modifier.PUBLIC);
+
+
+		for (FieldSpec fs : fields) {
+			classBuilder.addField(fs);
 		}
 
-        JavaFile javaFile = JavaFile.builder("com.example", definedClass)
-                .build();
+		for (MethodSpec ms : methods) {
+			classBuilder.addMethod(ms);
+		}
 
-        javaFile.writeTo(Paths.get("src/main/java")); 
-		
+
+		TypeSpec definedClass = classBuilder.build();
+
+
+		JavaFile javaFile = JavaFile.builder("com.example", definedClass)
+				.build();
+
+		javaFile.writeTo(Paths.get("src/main/java"));
 	}
 
 }
