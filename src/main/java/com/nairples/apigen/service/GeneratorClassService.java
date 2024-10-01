@@ -6,11 +6,15 @@ import java.util.ArrayList;
 
 import javax.lang.model.element.Modifier;
 
+import org.springframework.javapoet.AnnotationSpec;
 import org.springframework.javapoet.FieldSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Field;
@@ -58,7 +62,57 @@ public class GeneratorClassService {
 		TypeSpec definedClass = classBuilder.build();
 
 
-		JavaFile javaFile = JavaFile.builder("com.example", definedClass)
+		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName(), definedClass)
+				.build();
+
+		javaFile.writeTo(Paths.get("src/main/java"));
+	}
+	
+	public void generateControllerClass(ClassDefinition classDefinition) throws IOException {
+		
+		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
+		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
+		        .build();
+		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName()+"Controller")
+				.addAnnotation(RestController.class)
+				.addAnnotation(requestMappingAnnotation )
+				.addModifiers(Modifier.PUBLIC);
+		
+		TypeSpec definedClass = classBuilder.build();
+
+
+		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".controller", definedClass)
+				.build();
+
+		javaFile.writeTo(Paths.get("src/main/java"));
+		
+	}
+	
+	
+    public void generateRepositoryInterface(ClassDefinition classDefinition) throws IOException {
+    	
+    	TypeSpec.Builder classBuilder = TypeSpec.interfaceBuilder(classDefinition.getName()+"Repository")
+				.addModifiers(Modifier.PUBLIC);
+		
+		TypeSpec definedClass = classBuilder.build();
+
+
+		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".repository", definedClass)
+				.build();
+
+		javaFile.writeTo(Paths.get("src/main/java"));
+		
+	}
+    
+    public void generateServiceClass(ClassDefinition classDefinition) throws IOException {
+    	
+		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName()+"Service")
+				.addModifiers(Modifier.PUBLIC);
+		
+		TypeSpec definedClass = classBuilder.build();
+
+
+		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".service", definedClass)
 				.build();
 
 		javaFile.writeTo(Paths.get("src/main/java"));

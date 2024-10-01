@@ -15,5 +15,6 @@ public class ClassDefinition {
     private List<String> implementsInterfaces;
     private List<Field> fields;
     private List<Method> methods;
+    private String packageName;
 }
 

@@ -30,6 +30,9 @@ public class GeneratorController {
 		
 		try {
 			generatorClassService.generateClass(request);
+			generatorClassService.generateControllerClass(request);
+			generatorClassService.generateRepositoryInterface(request);
+			generatorClassService.generateServiceClass(request);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
