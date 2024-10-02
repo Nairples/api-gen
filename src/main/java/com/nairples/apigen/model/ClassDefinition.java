@@ -16,5 +16,6 @@ public class ClassDefinition {
     private List<Field> fields;
     private List<Method> methods;
     private String packageName;
+    private MavenConfiguration mavenConfiguration;
 }
 

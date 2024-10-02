@@ -29,6 +29,7 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
+			generatorClassService.generatePomXmlFile(request.getMavenConfiguration());
 			generatorClassService.generateClass(request);
 			generatorClassService.generateControllerClass(request);
 			generatorClassService.generateRepositoryInterface(request);
@@ -42,6 +43,7 @@ public class GeneratorController {
 		}
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
+
 	
 
 }
