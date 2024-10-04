@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.nairples.apigen.model.ApiGenReq;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.Domain;
+import com.nairples.apigen.model.MavenConfiguration;
 import com.nairples.apigen.service.GeneratorClassService;
+import com.nairples.apigen.service.GeneratorPomService;
 
 
 @RestController
@@ -19,17 +22,36 @@ public class GeneratorController {
 	@Autowired
 	private GeneratorClassService generatorClassService;
 	
+	@Autowired
+	private GeneratorPomService generatorPomService;
+	
+	@Autowired
+	private GeneratorPomService generatorDomainService;
+	
 	@PostMapping("/generate")
 	public ResponseEntity<String> generator(@RequestBody ApiGenReq request) {
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
 	
+	@PostMapping("/generate/domain")
+	public ResponseEntity<String> generatorDomain(@RequestBody Domain request) {
+		return new ResponseEntity<>("", HttpStatus.CREATED);
+	}
+	
+	
+	@PostMapping("/generate/pom")
+	public ResponseEntity<String> generatorPom(@RequestBody MavenConfiguration request) {
+		generatorPomService.generatePomXmlFile(request);
+		return new ResponseEntity<>("", HttpStatus.CREATED);
+	}
+	
+	
+	
 	@PostMapping("/generate/class")
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			generatorClassService.generatePomXmlFile(request.getMavenConfiguration());
 			generatorClassService.generateClass(request);
 			generatorClassService.generateControllerClass(request);
 			generatorClassService.generateRepositoryInterface(request);

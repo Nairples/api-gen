@@ -33,6 +33,7 @@ class GeneratorClassServiceTest {
     private final JavaFile mockJavaFile = mock(JavaFile.class);
     MavenConfiguration mavenConfiguration = mock(MavenConfiguration.class);
     GeneratorClassService generatorClassService = mock(GeneratorClassService.class);
+    GeneratorPomService generatorPomService = mock(GeneratorPomService.class);
 
 
     @Test
@@ -208,7 +209,7 @@ class GeneratorClassServiceTest {
         when(mavenConfiguration.getPlugins()).thenReturn(List.of());
 
         assertDoesNotThrow(() -> {
-            generatorClassService.generatePomXmlFile(mavenConfiguration);
+        	generatorPomService.generatePomXmlFile(mavenConfiguration);
         });
     }
 

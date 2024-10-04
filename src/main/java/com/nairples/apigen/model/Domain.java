@@ -7,4 +7,6 @@ import java.util.List;
 public class Domain {
     private String name;
     private List<ClassDefinition> classes;
+    private List<Relationship> relationships;
+    private MavenConfiguration mavenConfiguration;
 }
