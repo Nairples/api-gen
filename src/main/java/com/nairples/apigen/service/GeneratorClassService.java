@@ -16,6 +16,7 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.FieldSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
+import org.springframework.javapoet.ParameterizedTypeName;
 import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,8 +97,14 @@ public class GeneratorClassService {
 	
     public void generateRepositoryInterface(ClassDefinition classDefinition) throws IOException {
     	
+    	 AnnotationSpec repositoryAnnotation = AnnotationSpec.builder(ClassName.get("org.springframework.stereotype", "Repository"))
+                 .build();
     	TypeSpec.Builder classBuilder = TypeSpec.interfaceBuilder(classDefinition.getName()+"Repository")
-				.addModifiers(Modifier.PUBLIC);
+    			 .addAnnotation(repositoryAnnotation) // Aggiungiamo l'annotazione @Repository
+                 .addSuperinterface(ParameterizedTypeName.get(
+                         ClassName.get("org.springframework.data.jpa.repository", "JpaRepository"),
+                         ClassName.get(classDefinition.getPackageName(), classDefinition.getName()), ClassName.get(Long.class)))
+    			.addModifiers(Modifier.PUBLIC);
 		
 		TypeSpec definedClass = classBuilder.build();
 
