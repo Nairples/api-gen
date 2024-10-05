@@ -12,7 +12,11 @@ import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Domain;
 import com.nairples.apigen.model.MavenConfiguration;
 import com.nairples.apigen.service.GeneratorClassService;
+import com.nairples.apigen.service.GeneratorControllerService;
+import com.nairples.apigen.service.GeneratorDomainService;
 import com.nairples.apigen.service.GeneratorPomService;
+import com.nairples.apigen.service.GeneratorRepositoryService;
+import com.nairples.apigen.service.GeneratorServiceService;
 
 
 @RestController
@@ -20,13 +24,22 @@ import com.nairples.apigen.service.GeneratorPomService;
 public class GeneratorController {
 	
 	@Autowired
-	private GeneratorClassService generatorClassService;
+	private GeneratorClassService classGenerator;
 	
 	@Autowired
-	private GeneratorPomService generatorPomService;
+	private GeneratorPomService pomGenerator;
 	
 	@Autowired
-	private GeneratorPomService generatorDomainService;
+	private GeneratorDomainService domainGenerator;
+	
+	@Autowired
+	private GeneratorControllerService controllerGenerator;
+	
+	@Autowired
+	private GeneratorRepositoryService repositoryGenerator;
+	
+	@Autowired
+	private GeneratorServiceService serviceGenerator;
 	
 	@PostMapping("/generate")
 	public ResponseEntity<String> generator(@RequestBody ApiGenReq request) {
@@ -36,13 +49,19 @@ public class GeneratorController {
 	
 	@PostMapping("/generate/domain")
 	public ResponseEntity<String> generatorDomain(@RequestBody Domain request) {
+		try {
+			domainGenerator.generateDomain(request);
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
 	
 	@PostMapping("/generate/pom")
 	public ResponseEntity<String> generatorPom(@RequestBody MavenConfiguration request) {
-		generatorPomService.generatePomXmlFile(request);
+		pomGenerator.generatePomXmlFile(request);
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
@@ -52,14 +71,11 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			generatorClassService.generateClass(request);
-			generatorClassService.generateControllerClass(request);
-			generatorClassService.generateRepositoryInterface(request);
-			generatorClassService.generateServiceClass(request);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+			classGenerator.generateClass(request);
+			controllerGenerator.generateControllerClass(request);
+			repositoryGenerator.generateRepositoryInterface(request);
+			serviceGenerator.generateServiceClass(request);
+		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
