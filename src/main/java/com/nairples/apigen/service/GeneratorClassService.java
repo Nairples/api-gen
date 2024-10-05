@@ -12,6 +12,7 @@ import javax.xml.bind.Marshaller;
 import com.nairples.apigen.model.MavenConfiguration;
 import com.nairples.apigen.pom.*;
 import org.springframework.javapoet.AnnotationSpec;
+import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.FieldSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
@@ -32,7 +33,7 @@ public class GeneratorClassService {
 		ArrayList<FieldSpec> fields = new ArrayList<>();
 		if (classDefinition.getFields() != null) {
 			for (Field field : classDefinition.getFields()) {
-				FieldSpec fieldSpec = FieldSpec.builder(Class.forName(field.getType()), field.getName()).build();
+				FieldSpec fieldSpec = FieldSpec.builder(ClassName.get("", field.getType()), field.getName()).build();
 				fields.add(fieldSpec);
 			}
 		}
@@ -42,7 +43,7 @@ public class GeneratorClassService {
 			for (Method method : classDefinition.getMethods()) {
 				MethodSpec mSpec = MethodSpec.methodBuilder(method.getName())
 						.addModifiers(Modifier.PUBLIC)
-						.returns(Class.forName(method.getReturnType()))
+						.returns(ClassName.get("", method.getReturnType()))
 						.addCode("return null;\n")
 						.build();
 

@@ -5,24 +5,21 @@
         "keycloak": false,
         "springSecurity": false,
         "springCloudConfig": false,
-		"zipkin": true,
-		"actuator": true
+        "zipkin": true,
+        "actuator": true
     },
-    "domains": [
-        {
+    "domains": [{
             "name": "",
-            "classes": [
-                {
+            "classes": [{
                     "name": "",
-					"abstract": false,
-					"type": "class",
+                    "abstract": false,
+                    "type": "class",
                     "noArgsConstructor": true,
                     "fieldsConstructor": true,
                     "accessModifier": "public",
-					"extends": "BaseEntity",
-					"implements": ["Serializable"],
-					"fields": [
-                        {
+                    "extends": "BaseEntity",
+                    "implements": ["Serializable"],
+                    "fields": [{
                             "name": "",
                             "type": "",
                             "static": false,
@@ -32,16 +29,14 @@
                             "set": true
                         }
                     ],
-                    "methods": [
-                        {
+                    "methods": [{
                             "name": "",
                             "returnType": "",
-							"accessModifier": "public",
-							"static": false,
+                            "accessModifier": "public",
+                            "static": false,
                             "final": false,
-							"throws": ["IllegalArgumentException"],
-							"inputVariables": [
-                                {
+                            "throws": ["IllegalArgumentException"],
+                            "inputVariables": [{
                                     "name": "",
                                     "type": ""
                                 }
@@ -49,19 +44,36 @@
                         }
                     ]
                 }
+            ],
+            "relationships": [{
+                    "name": "",
+                    "firstClassName": "",
+                    "secondClassName": "",
+                    "relationType": "oneToOne",
+                    "bidirectional": true,
+                    "foreignKey": "order_id",
+                    "fields": [{
+                            "name": "",
+                            "type": "",
+                            "static": false,
+                            "final": false,
+                            "accessModifier": "public",
+                            "get": true,
+                            "set": true
+                        }
+                    ]
+                }
             ]
         }
     ],
-    "relationships": [
-        {
+    "relationships": [{
             "name": "",
             "firstClassName": "",
             "secondClassName": "",
             "relationType": "oneToOne",
-			"bidirectional": true,
-			"foreignKey": "order_id",
-            "fields": [
-                {
+            "bidirectional": true,
+            "foreignKey": "order_id",
+            "fields": [{
                     "name": "",
                     "type": "",
                     "static": false,

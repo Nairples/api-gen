@@ -1,0 +1,51 @@
+{
+    "name": "Product",
+    "abstract": false,
+    "type": "class",
+    "noArgsConstructor": true,
+    "fieldsConstructor": true,
+    "accessModifier": "public",
+    "extends": "BaseEntity",
+    "implements": ["Serializable"],
+    "fields": [{
+            "name": "id",
+            "type": "Long",
+            "static": false,
+            "final": false,
+            "accessModifier": "private",
+            "get": true,
+            "set": true
+        }, {
+            "name": "name",
+            "type": "String",
+            "static": false,
+            "final": false,
+            "accessModifier": "private",
+            "get": true,
+            "set": true
+        }, {
+            "name": "price",
+            "type": "Double",
+            "static": false,
+            "final": false,
+            "accessModifier": "private",
+            "get": true,
+            "set": true
+        }
+    ],
+    "methods": [{
+            "name": "calculateDiscountedPrice",
+            "returnType": "Double",
+            "accessModifier": "public",
+            "static": false,
+            "final": false,
+            "throws": ["IllegalArgumentException"],
+            "inputVariables": [{
+                    "name": "discountPercentage",
+                    "type": "Double"
+                }
+            ]
+        }
+    ],
+    "packageName": "com.nairples.examples"
+}
