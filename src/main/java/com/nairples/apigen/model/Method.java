@@ -12,4 +12,5 @@ public class Method {
     private boolean isFinal;
     private List<String> throwsList;
     private List<InputVariable> inputVariables;
+    private String code;
 }
