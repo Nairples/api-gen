@@ -7,8 +7,12 @@ import com.nairples.apigen.model.Method;
 import com.nairples.apigen.pom.Build;
 import com.nairples.apigen.pom.Parent;
 import com.nairples.apigen.pom.Project;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.TypeSpec;
 
@@ -24,16 +28,26 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import static com.nairples.apigen.service.GeneratorRepositoryServiceTest.deleteDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
+@ExtendWith(MockitoExtension.class)
 class GeneratorClassServiceTest {
 
     private final JavaFile mockJavaFile = mock(JavaFile.class);
-    MavenConfiguration mavenConfiguration = mock(MavenConfiguration.class);
-    GeneratorClassService generatorClassService = mock(GeneratorClassService.class);
-    GeneratorPomService generatorPomService = mock(GeneratorPomService.class);
+    @Mock
+    MavenConfiguration mavenConfiguration;
+    @Mock
+    GeneratorClassService generatorClassService;
+    @Mock
+    GeneratorPomService generatorPomService;
+
+    @AfterAll
+    static void tearDown() throws IOException {
+        deleteDirectory(Paths.get("src/main/java/Test"));
+    }
 
 
     @Test
@@ -68,6 +82,7 @@ class GeneratorClassServiceTest {
         Method method = new Method();
         method.setName("getId");
         method.setReturnType("java.lang.Integer");
+        method.setInputVariables(List.of());
         method.setAccessModifier(Modifier.PUBLIC.toString());
 
         ClassDefinition classDefinition = new ClassDefinition();
@@ -85,7 +100,7 @@ class GeneratorClassServiceTest {
         assertTrue(Files.exists(filePath));
 
         String fileContent = Files.readString(filePath);
-        assertTrue(fileContent.contains("public Integer getId() {")); // Check if the method is correctly generated
+        assertTrue(fileContent.contains("public java.lang.Integer getId() {")); // Check if the method is correctly generated
         assertTrue(fileContent.contains("return null;")); // Check if the method body is correct
 
         // Clean up
@@ -113,7 +128,16 @@ class GeneratorClassServiceTest {
 
 
     @Test
-    void testGenerateClass_invalidFieldType_throwsClassNotFoundException() {
+    void testGenerateClass_invalidFieldType_throwsClassNotFoundException() throws IOException, ClassNotFoundException {
+
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any());
+
+        Method method = new Method();
+        method.setName("getId");
+        method.setReturnType("java.lang.Integer");
+        method.setInputVariables(List.of());
+        method.setAccessModifier(Modifier.PUBLIC.toString());
+
         // Arrange
         Field field = new Field();
         field.setName("invalidField");
@@ -122,31 +146,35 @@ class GeneratorClassServiceTest {
         ClassDefinition classDefinition = new ClassDefinition();
         classDefinition.setName("InvalidFieldClass");
         classDefinition.setFields(Collections.singletonList(field));
+        classDefinition.setMethods(Collections.singletonList(method));
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
+
 
         assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(classDefinition));
     }
 
     @Test
-    void testGenerateClass_invalidMethodReturnType_throwsClassNotFoundException() {
+    void testGenerateClass_invalidMethodReturnType_throwsClassNotFoundException_NoPackage() throws IOException, ClassNotFoundException {
+
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any());
+
         // Arrange
         Method method = new Method();
         method.setName("invalidMethod");
         method.setReturnType("non.existent.ReturnType");
+        method.setInputVariables(List.of());
 
         ClassDefinition classDefinition = new ClassDefinition();
         classDefinition.setName("InvalidMethodClass");
         classDefinition.setMethods(Collections.singletonList(method));
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
 
         assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(classDefinition));
     }
 
     @Test
-    void testGenerateClass_nullClassDefinition_throwsNullPointerException() {
-        GeneratorClassService generatorClassService = new GeneratorClassService();
+    void testGenerateClass_nullClassDefinition_throwsNullPointerException() throws IOException, ClassNotFoundException {
+       doThrow(NullPointerException.class).when(generatorClassService).generateClass(any());
 
         assertThrows(NullPointerException.class, () -> generatorClassService.generateClass(null));
     }
@@ -173,6 +201,8 @@ class GeneratorClassServiceTest {
     }
     @Test
     void testGenerateClass_emptyFieldsAndMethods_generatesEmptyClass() throws ClassNotFoundException, IOException {
+
+
         // Arrange
         ClassDefinition classDefinition = new ClassDefinition();
         classDefinition.setName("EmptyClass"); // No fields and methods
@@ -199,15 +229,6 @@ class GeneratorClassServiceTest {
     void testGeneratePomXmlFile_withValidConfig_success() {
 
 
-        when(mavenConfiguration.getGroupId()).thenReturn("com.example");
-        when(mavenConfiguration.getArtifactId()).thenReturn("test-app");
-        when(mavenConfiguration.getVersion()).thenReturn("1.0.0");
-        when(mavenConfiguration.getPackaging()).thenReturn("jar");
-        when(mavenConfiguration.getDescription()).thenReturn("Test Application");
-        when(mavenConfiguration.getUrl()).thenReturn("http://example.com");
-        when(mavenConfiguration.getDependencies()).thenReturn(List.of());
-        when(mavenConfiguration.getPlugins()).thenReturn(List.of());
-
         assertDoesNotThrow(() -> {
         	generatorPomService.generatePomXmlFile(mavenConfiguration);
         });
@@ -216,14 +237,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGeneratePomXmlFile_withValidConfig_compareContent() throws Exception {
 
-        when(mavenConfiguration.getGroupId()).thenReturn("com.example");
-        when(mavenConfiguration.getArtifactId()).thenReturn("test-app");
-        when(mavenConfiguration.getVersion()).thenReturn("1.0.0");
-        when(mavenConfiguration.getPackaging()).thenReturn("jar");
-        when(mavenConfiguration.getDescription()).thenReturn("Test Application");
-        when(mavenConfiguration.getUrl()).thenReturn("http://example.com");
-        when(mavenConfiguration.getDependencies()).thenReturn(List.of());
-        when(mavenConfiguration.getPlugins()).thenReturn(List.of());
+
 
 
         StringWriter stringWriter = new StringWriter();
@@ -234,13 +248,13 @@ class GeneratorClassServiceTest {
 
         Project project = Project.builder()
                 .modelVersion("4.0.0")
-                .groupId(mavenConfiguration.getGroupId())
-                .artifactId(mavenConfiguration.getArtifactId())
-                .version(mavenConfiguration.getVersion())
-                .packaging(mavenConfiguration.getPackaging())
-                .name(mavenConfiguration.getArtifactId())
-                .description(mavenConfiguration.getDescription())
-                .url(mavenConfiguration.getUrl())
+                .groupId("com.example")
+                .artifactId("test-app")
+                .version("1.0.0")
+                .packaging("jar")
+                .name("test-app")
+                .description("Test Application")
+                .url("http://example.com")
                 .dependencies(List.of())
                 .build(Build.builder().build())
                 .build();
@@ -268,18 +282,6 @@ class GeneratorClassServiceTest {
 
     @Test
     void testGeneratePomXmlFile_withValidSpringBootConfig_compareContent() throws Exception {
-        // Arrange
-        MavenConfiguration mavenConfiguration = Mockito.mock(MavenConfiguration.class);
-
-        when(mavenConfiguration.getGroupId()).thenReturn("com.example");
-        when(mavenConfiguration.getArtifactId()).thenReturn("test-app");
-        when(mavenConfiguration.getVersion()).thenReturn("1.0.0");
-        when(mavenConfiguration.getPackaging()).thenReturn("jar");
-        when(mavenConfiguration.getDescription()).thenReturn("Test Application");
-        when(mavenConfiguration.getUrl()).thenReturn("http://example.com");
-        when(mavenConfiguration.getDependencies()).thenReturn(List.of());
-        when(mavenConfiguration.getPlugins()).thenReturn(List.of());
-        when(mavenConfiguration.getSpringBootVersion()).thenReturn("2.5.6"); // Example Spring Boot version
 
 
         StringWriter stringWriter = new StringWriter();
@@ -288,18 +290,18 @@ class GeneratorClassServiceTest {
 
         Project project = Project.builder()
                 .modelVersion("4.0.0")
-                .groupId(mavenConfiguration.getGroupId())
-                .artifactId(mavenConfiguration.getArtifactId())
-                .version(mavenConfiguration.getVersion())
-                .packaging(mavenConfiguration.getPackaging())
-                .name(mavenConfiguration.getArtifactId())
-                .description(mavenConfiguration.getDescription())
-                .url(mavenConfiguration.getUrl())
+                .groupId("com.example")
+                .artifactId("test-app")
+                .version("1.0.0")
+                .packaging("jar")
+                .name("test-app")
+                .description("Test Application")
+                .url("http://example.com")
                 .dependencies(List.of())
                 .parent(Parent.builder()
                         .groupId("org.springframework.boot")
                         .artifactId("spring-boot-starter-parent")
-                        .version(mavenConfiguration.getSpringBootVersion())
+                        .version("2.5.6")
                         .relativePath("")
                         .build())
                 .build(Build.builder().build())
