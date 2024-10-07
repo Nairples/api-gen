@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 
 import javax.lang.model.element.Modifier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.javapoet.AnnotationSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.TypeSpec;
@@ -12,12 +13,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 
 @Component
 public class GeneratorControllerService {
 	
-public void generateControllerClass(ClassDefinition classDefinition) throws IOException {
+	@Autowired
+	private ApiGenConfig apiGenConfig;
+	
+	public void generateControllerClass(ClassDefinition classDefinition) throws IOException {
 		
 		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
 		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
@@ -33,7 +38,7 @@ public void generateControllerClass(ClassDefinition classDefinition) throws IOEx
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".controller", definedClass)
 				.build();
 
-		javaFile.writeTo(Paths.get("src/main/java"));
+		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java"));
 		
 	}
 

@@ -1,38 +1,33 @@
 package com.nairples.apigen.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.Modifier;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
-import com.nairples.apigen.model.MavenConfiguration;
-import com.nairples.apigen.pom.*;
-import com.nairples.apigen.util.StringUtils;
-
-import org.springframework.javapoet.AnnotationSpec;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.FieldSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.ParameterSpec;
-import org.springframework.javapoet.ParameterizedTypeName;
 import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Field;
 import com.nairples.apigen.model.InputVariable;
 import com.nairples.apigen.model.Method;
+import com.nairples.apigen.util.StringUtils;
 
 @Component
 public class GeneratorClassService {
+	
+	@Autowired
+	private ApiGenConfig apiGenConfig;
 
 	public void generateClass(ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
 
@@ -116,7 +111,7 @@ public class GeneratorClassService {
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName(), definedClass)
 				.build();
 
-		javaFile.writeTo(Paths.get("src/main/java"));
+		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java"));
 	}
 
 }

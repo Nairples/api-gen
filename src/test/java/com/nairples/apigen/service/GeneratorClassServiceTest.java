@@ -1,12 +1,28 @@
 package com.nairples.apigen.service;
 
-import com.nairples.apigen.model.ClassDefinition;
-import com.nairples.apigen.model.Field;
-import com.nairples.apigen.model.MavenConfiguration;
-import com.nairples.apigen.model.Method;
-import com.nairples.apigen.pom.Build;
-import com.nairples.apigen.pom.Parent;
-import com.nairples.apigen.pom.Project;
+import static com.nairples.apigen.service.GeneratorRepositoryServiceTest.deleteDirectory;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+
+import javax.lang.model.element.Modifier;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,21 +32,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.TypeSpec;
 
-import javax.lang.model.element.Modifier;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-
-import static com.nairples.apigen.service.GeneratorRepositoryServiceTest.deleteDirectory;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.Field;
+import com.nairples.apigen.model.MavenConfiguration;
+import com.nairples.apigen.model.Method;
+import com.nairples.apigen.pom.Build;
+import com.nairples.apigen.pom.Parent;
+import com.nairples.apigen.pom.Project;
 
 
 @ExtendWith(MockitoExtension.class)
