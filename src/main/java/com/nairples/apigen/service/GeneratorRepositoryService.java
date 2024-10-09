@@ -22,7 +22,12 @@ public class GeneratorRepositoryService {
 	@Autowired
 	private ApiGenConfig apiGenConfig;
 
-	public void generateRepositoryInterface(ClassDefinition classDefinition) throws IOException {
+    public GeneratorRepositoryService(ApiGenConfig apiGenConfig) {
+        this.apiGenConfig = apiGenConfig;
+    }
+
+
+    public void generateRepositoryInterface(ClassDefinition classDefinition) throws IOException {
 
 		AnnotationSpec repositoryAnnotation = AnnotationSpec
 				.builder(ClassName.get("org.springframework.stereotype", "Repository")).build();

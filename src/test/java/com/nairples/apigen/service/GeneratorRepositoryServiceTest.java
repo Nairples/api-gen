@@ -2,12 +2,14 @@ package com.nairples.apigen.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
+import com.nairples.apigen.config.ApiGenConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +20,13 @@ import com.nairples.apigen.model.ClassDefinition;
 @ExtendWith(MockitoExtension.class)
 class GeneratorRepositoryServiceTest {
 
-
-    GeneratorRepositoryService generatorRepositoryService = new GeneratorRepositoryService();
+   private ApiGenConfig apiGenConfig = new ApiGenConfig();
+    GeneratorRepositoryService generatorRepositoryService = new GeneratorRepositoryService(apiGenConfig);
 
     @AfterAll
     static void tearDown() throws IOException {
-        deleteDirectory(Paths.get("src/main/java/com/example"));
+        String userHome = System.getProperty("user.home");
+        deleteDirectory(Paths.get( userHome + File.separator + "apiGen"));
     }
 
     @Test
@@ -37,7 +40,7 @@ class GeneratorRepositoryServiceTest {
         generatorRepositoryService.generateRepositoryInterface(classDefinition);
 
 
-        assertTrue(Files.exists(Paths.get("src/main/java/com/example/model/repository/UserRepository.java")));
+        assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/model/repository/UserRepository.java")));
     }
 
     @Test
@@ -50,7 +53,7 @@ class GeneratorRepositoryServiceTest {
 
         generatorRepositoryService.generateRepositoryInterface(classDefinition);
 
-        assertTrue(Files.exists(Paths.get("src/main/java/com/example/complex/repository/ComplexUserRepository.java")));
+        assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/complex/repository/ComplexUserRepository.java")));
     }
 
     @Test
@@ -64,7 +67,7 @@ class GeneratorRepositoryServiceTest {
         generatorRepositoryService.generateRepositoryInterface(classDefinition);
 
 
-        assertTrue(Files.exists(Paths.get("src/main/java/com/example/business/domain/repository/OrderRepository.java")));
+        assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/business/domain/repository/OrderRepository.java")));
     }
 
     @Test
@@ -78,7 +81,7 @@ class GeneratorRepositoryServiceTest {
         generatorRepositoryService.generateRepositoryInterface(classDefinition);
 
         // Assert
-        assertTrue(Files.exists(Paths.get("src/main/java/com/example/store/repository/ProductRepository.java")));
+        assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
     }
 
     @Test
@@ -92,7 +95,7 @@ class GeneratorRepositoryServiceTest {
         generatorRepositoryService.generateRepositoryInterface(classDefinition);
 
         // Assert
-        assertTrue(Files.exists(Paths.get("src/main/java/com/example/store/repository/ProductRepository.java")));
+        assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
     }
 
     static void deleteDirectory(Path path) throws IOException {

@@ -14,15 +14,15 @@ public class ApiGenConfig {
 	@Value("${apiGen.outputDirectory}")
 	private String outputDirectory;
 
+
+
 	public String getOutputDirectory() {
 		
 		if(!StringUtils.hasLength(outputDirectory)) {
 			String userHome = System.getProperty("user.home");
 			String timestamp = getCurrentTimestamp();
 			
-			outputDirectory = userHome + 
-					File.separator + 
-					"apiGen" + 
+			outputDirectory = userHome + File.separator + "apiGen" +
 					File.separator + 
 					timestamp +
 					File.separator;

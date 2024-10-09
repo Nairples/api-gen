@@ -29,7 +29,11 @@ public class GeneratorClassService {
 	@Autowired
 	private ApiGenConfig apiGenConfig;
 
-	public void generateClass(ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
+    public GeneratorClassService(ApiGenConfig apiGenConfig) {
+        this.apiGenConfig = apiGenConfig;
+    }
+
+    public void generateClass(ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
 
 		ArrayList<FieldSpec> fields = new ArrayList<>();
 		if (classDefinition.getFields() != null) {
@@ -45,7 +49,7 @@ public class GeneratorClassService {
 					getMethod.setInputVariables(List.of(fieldInput));
 					getMethod.setReturnType(field.getType());
 					if(classDefinition.getMethods() == null) {
-						classDefinition.setMethods(new ArrayList<Method>());
+						classDefinition.setMethods(new ArrayList<>());
 					}
 					classDefinition.getMethods().add(getMethod );
 				}
@@ -53,7 +57,7 @@ public class GeneratorClassService {
 				if(field.isSet()) {
 					Method setMethod = new Method();
 					if(classDefinition.getMethods() == null) {
-						classDefinition.setMethods(new ArrayList<Method>());
+						classDefinition.setMethods(new ArrayList<>());
 					}
 					setMethod.setName("set"+StringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
 					setMethod.setCode("this."+field.getName()+" = " + field.getName()+"; \n");

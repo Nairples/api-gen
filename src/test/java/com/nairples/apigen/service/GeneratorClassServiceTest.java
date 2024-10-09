@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -23,12 +24,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.nairples.apigen.config.ApiGenConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.TypeSpec;
 
@@ -52,9 +55,11 @@ class GeneratorClassServiceTest {
     @Mock
     GeneratorPomService generatorPomService;
 
+
     @AfterAll
     static void tearDown() throws IOException {
-        deleteDirectory(Paths.get("src/main/java/Test"));
+        String userHome = System.getProperty("user.home");
+        deleteDirectory(Paths.get( userHome + File.separator + "apiGen"));
     }
 
 
@@ -70,12 +75,13 @@ class GeneratorClassServiceTest {
         classDefinition.setFields(Collections.singletonList(field));
         classDefinition.setPackageName("Test");
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
+        ApiGenConfig customAPiConfig =new ApiGenConfig();
+        GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
         generatorClassService.generateClass(classDefinition);
 
 
-        Path filePath = Paths.get("src/main/java/Test/TestEntity.java");
+        Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
         assertTrue(Files.exists(filePath));
 
         String fileContent = Files.readString(filePath);
@@ -98,13 +104,15 @@ class GeneratorClassServiceTest {
         classDefinition.setPackageName("Test");
         classDefinition.setMethods(Collections.singletonList(method));
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
+
+        ApiGenConfig customAPiConfig =new ApiGenConfig();
+        GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
 
         generatorClassService.generateClass(classDefinition);
 
 
-        Path filePath = Paths.get("src/main/java/Test/TestEntity.java");
+        Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
         assertTrue(Files.exists(filePath));
 
         String fileContent = Files.readString(filePath);
@@ -122,12 +130,12 @@ class GeneratorClassServiceTest {
         classDefinition.setName("TestEntity");
         classDefinition.setPackageName("Test");
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
-
+        ApiGenConfig customAPiConfig =new ApiGenConfig();
+        GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
         generatorClassService.generateClass(classDefinition);
 
-        Path filePath = Paths.get("src/main/java/Test/TestEntity.java");
+        Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
         assertTrue(Files.exists(filePath)); // Check if the file is created
 
         // Clean up
@@ -216,13 +224,14 @@ class GeneratorClassServiceTest {
         classDefinition.setName("EmptyClass"); // No fields and methods
         classDefinition.setPackageName("Test");
 
-        GeneratorClassService generatorClassService = new GeneratorClassService();
+        ApiGenConfig customAPiConfig =new ApiGenConfig();
+        GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
         // Act
         generatorClassService.generateClass(classDefinition);
 
         // Assert
-        Path filePath = Paths.get("src/main/java/Test/EmptyClass.java");
+        Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/EmptyClass.java");
         assertTrue(Files.exists(filePath)); // File should still be generated
 
         String fileContent = Files.readString(filePath);
