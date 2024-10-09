@@ -5,8 +5,8 @@
     "noArgsConstructor": true,
     "fieldsConstructor": true,
     "accessModifier": "public",
-    "extends": "BaseEntity",
-    "implements": ["Serializable"],
+    "extends": "",
+    "implements": [""],
     "fields": [{
             "name": "id",
             "type": "Long",

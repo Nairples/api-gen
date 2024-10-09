@@ -15,13 +15,14 @@ import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.ParameterSpec;
 import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Field;
 import com.nairples.apigen.model.InputVariable;
 import com.nairples.apigen.model.Method;
-import com.nairples.apigen.util.StringUtils;
+import com.nairples.apigen.util.CustomStringUtils;
 
 @Component
 public class GeneratorClassService {
@@ -41,7 +42,7 @@ public class GeneratorClassService {
 				FieldSpec fieldSpec = FieldSpec.builder(ClassName.get("", field.getType()), field.getName()).build();
 				if(field.isGet()) {
 					Method getMethod = new Method();
-					getMethod.setName("get"+StringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
+					getMethod.setName("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
 					getMethod.setCode("return "+field.getName()+";\n");
 					InputVariable fieldInput = new InputVariable();
 					fieldInput.setName(field.getName());
@@ -59,7 +60,7 @@ public class GeneratorClassService {
 					if(classDefinition.getMethods() == null) {
 						classDefinition.setMethods(new ArrayList<>());
 					}
-					setMethod.setName("set"+StringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
+					setMethod.setName("set"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
 					setMethod.setCode("this."+field.getName()+" = " + field.getName()+"; \n");
 					InputVariable fieldInput = new InputVariable();
 					fieldInput.setName(field.getName());
@@ -97,25 +98,74 @@ public class GeneratorClassService {
 		}
 
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName())
-				.addModifiers(Modifier.PUBLIC);
+				.addModifiers(getAccessModifier(classDefinition));
 
 
 		for (FieldSpec fs : fields) {
 			classBuilder.addField(fs);
 		}
+		
+		if(classDefinition.isAbstract()) {
+			classBuilder.modifiers.add(Modifier.ABSTRACT);
+		}
+		
+		if(classDefinition.isFinal()) {
+			classBuilder.modifiers.add(Modifier.FINAL);
+		}
 
 		for (MethodSpec ms : methods) {
 			classBuilder.addMethod(ms);
 		}
+		
+		
+		if(StringUtils.hasLength(classDefinition.getExtendsClass())) {
+			classBuilder.superclass(ClassName.get("", classDefinition.getExtendsClass()));
+		}
+		
+		if(classDefinition.getImplementsInterfaces() != null && !classDefinition.getImplementsInterfaces().isEmpty()) {
+			for(String interfaceToImpl: classDefinition.getImplementsInterfaces()) {
+				if(StringUtils.hasLength(interfaceToImpl)) {
+					classBuilder.addSuperinterface(ClassName.get("", interfaceToImpl));
+				}
+			}
+		}
+		
+		
 
 
 		TypeSpec definedClass = classBuilder.build();
+		
+		
 
 
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName(), definedClass)
 				.build();
 
 		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java"));
+	}
+
+	private Modifier getAccessModifier(ClassDefinition classDefinition) {
+		
+		Modifier modifier = null;
+		String accessModifier = classDefinition.getAccessModifier();
+
+		if (StringUtils.hasLength(accessModifier)) {
+			switch (accessModifier) {
+			case "public":
+				modifier = Modifier.PUBLIC;
+				break;
+			case "private":
+				modifier = Modifier.PRIVATE;
+				break;
+			default:
+				modifier = Modifier.DEFAULT;
+				break;
+
+			}
+		} else {
+			modifier = Modifier.DEFAULT;
+		}
+		return modifier;
 	}
 
 }

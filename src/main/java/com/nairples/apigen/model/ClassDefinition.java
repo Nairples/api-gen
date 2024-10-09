@@ -8,6 +8,7 @@ import lombok.Data;
 public class ClassDefinition {
     private String name;
     private boolean isAbstract;
+    private boolean isFinal;
     private String type;
     private boolean noArgsConstructor;
     private boolean fieldsConstructor;

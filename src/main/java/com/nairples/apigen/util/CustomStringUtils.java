@@ -1,6 +1,6 @@
 package com.nairples.apigen.util;
 
-public class StringUtils {
+public class CustomStringUtils {
 	
 	public static String capitalizeFirstLetter(String input) {
         if (input == null || input.isEmpty()) {
