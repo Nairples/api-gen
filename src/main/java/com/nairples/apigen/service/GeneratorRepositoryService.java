@@ -17,17 +17,14 @@ import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 
 @Component
-public class GeneratorRepositoryService {
+public class GeneratorRepositoryService extends Generator {
 
-	@Autowired
-	private ApiGenConfig apiGenConfig;
-
-    public GeneratorRepositoryService(ApiGenConfig apiGenConfig) {
-        this.apiGenConfig = apiGenConfig;
+	public GeneratorRepositoryService(ApiGenConfig apiGenConfig) {
+        super(apiGenConfig);
     }
 
 
-    public void generateRepositoryInterface(ClassDefinition classDefinition) throws IOException {
+    public void generateRepositoryInterface(String projectName, String domainName, ClassDefinition classDefinition) throws IOException {
 
 		AnnotationSpec repositoryAnnotation = AnnotationSpec
 				.builder(ClassName.get("org.springframework.stereotype", "Repository")).build();
@@ -43,7 +40,7 @@ public class GeneratorRepositoryService {
 
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName() + ".repository", definedClass).build();
 
-		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory() + "src/main/java"));
+		writeFile(projectName, domainName, javaFile);
 
 	}
 

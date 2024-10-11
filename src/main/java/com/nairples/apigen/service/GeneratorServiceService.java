@@ -14,12 +14,16 @@ import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 
 @Component
-public class GeneratorServiceService {
+public class GeneratorServiceService extends Generator {
 
-	@Autowired
-	private ApiGenConfig apiGenConfig;
+	
 
-	public void generateServiceClass(ClassDefinition classDefinition) throws IOException {
+	protected GeneratorServiceService(ApiGenConfig apiGenConfig) {
+		super(apiGenConfig);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void generateServiceClass(String projectName, String domainName, ClassDefinition classDefinition) throws IOException {
 
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName() + "Service")
 				.addModifiers(Modifier.PUBLIC);
@@ -28,7 +32,7 @@ public class GeneratorServiceService {
 
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName() + ".service", definedClass).build();
 
-		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java"));
+		writeFile(projectName, domainName, javaFile);
 	}
 
 }

@@ -17,6 +17,7 @@ public class MavenConfiguration {
 
     private List<Dependency> dependencies;
     private List<Plugin> plugins;
+    private Properties properties;
 
 
     @Data
@@ -40,5 +41,11 @@ public class MavenConfiguration {
             private List<String> goals;
         }
     }
+    
+    @Data
+    public static class Properties {
+    	private String javaVersion;
+    }
+    
 }
 

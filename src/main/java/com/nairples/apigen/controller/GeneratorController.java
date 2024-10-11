@@ -64,7 +64,7 @@ public class GeneratorController {
 	
 	@PostMapping("/generate/pom")
 	public ResponseEntity<String> generatorPom(@RequestBody MavenConfiguration request) {
-		pomGenerator.generatePomXmlFile(request);
+		pomGenerator.generatePomXmlFile("", "", request);
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
@@ -74,10 +74,10 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			classGenerator.generateClass(request);
-			controllerGenerator.generateControllerClass(request);
-			repositoryGenerator.generateRepositoryInterface(request);
-			serviceGenerator.generateServiceClass(request);
+			classGenerator.generateClass("", "", request);
+			controllerGenerator.generateControllerClass("", "", request);
+			repositoryGenerator.generateRepositoryInterface("", "", request);
+			serviceGenerator.generateServiceClass("", "", request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

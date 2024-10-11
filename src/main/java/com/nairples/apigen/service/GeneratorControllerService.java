@@ -17,12 +17,14 @@ import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
 
 @Component
-public class GeneratorControllerService {
+public class GeneratorControllerService extends Generator  {
 	
-	@Autowired
-	private ApiGenConfig apiGenConfig;
-	
-	public void generateControllerClass(ClassDefinition classDefinition) throws IOException {
+	protected GeneratorControllerService(ApiGenConfig apiGenConfig) {
+		super(apiGenConfig);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void generateControllerClass(String projectName, String domainName, ClassDefinition classDefinition) throws IOException {
 		
 		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
 		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
@@ -38,7 +40,7 @@ public class GeneratorControllerService {
 		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".controller", definedClass)
 				.build();
 
-		javaFile.writeTo(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java"));
+		writeFile(projectName, domainName, javaFile);
 		
 	}
 

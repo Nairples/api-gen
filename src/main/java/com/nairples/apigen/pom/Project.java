@@ -55,6 +55,9 @@ public class Project {
 
     @XmlElement(name = "build")
     private Build build;
+    
+    @XmlElement(name = "properties")
+    private Properties properties;
 
 }
 
