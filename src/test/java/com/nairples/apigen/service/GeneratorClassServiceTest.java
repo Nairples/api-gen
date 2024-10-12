@@ -149,7 +149,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_invalidFieldType_throwsClassNotFoundException() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(),  any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any(),  any());
 
         Method method = new Method();
         method.setName("getId");
@@ -175,7 +175,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_invalidMethodReturnType_throwsClassNotFoundException_NoPackage() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(), any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any(), any());
 
         // Arrange
         Method method = new Method();
@@ -193,9 +193,9 @@ class GeneratorClassServiceTest {
 
     @Test
     void testGenerateClass_nullClassDefinition_throwsNullPointerException() throws IOException, ClassNotFoundException {
-       doThrow(NullPointerException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(),  any());
+       doThrow(NullPointerException.class).when(generatorClassService).generateClass( any(),  any());
 
-        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass(GenerationContext.getEmptyGenerationContext(), null));
+        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass( null, null));
     }
 
     @Test
