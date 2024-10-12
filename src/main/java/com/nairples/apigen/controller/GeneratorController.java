@@ -20,6 +20,7 @@ import com.nairples.apigen.service.GeneratorDomainService;
 import com.nairples.apigen.service.GeneratorPomService;
 import com.nairples.apigen.service.GeneratorRepositoryService;
 import com.nairples.apigen.service.GeneratorServiceService;
+import com.nairples.apigen.util.GenerationContext;
 
 
 @RestController
@@ -53,7 +54,12 @@ public class GeneratorController {
 	@PostMapping("/generate/domain")
 	public ResponseEntity<String> generatorDomain(@RequestBody Domain request) {
 		try {
-			domainGenerator.generateDomain(request);
+			GenerationContext context = GenerationContext.builder()
+					.domainName(request.getName())
+					.packageName(request.getPackageName())
+					.projectName("")
+					.build();
+			domainGenerator.generateDomain(context, request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,7 +70,7 @@ public class GeneratorController {
 	
 	@PostMapping("/generate/pom")
 	public ResponseEntity<String> generatorPom(@RequestBody MavenConfiguration request) {
-		pomGenerator.generatePomXmlFile("", "", request);
+		pomGenerator.generatePomXmlFile(GenerationContext.getEmptyGenerationContext(), request);
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
@@ -74,10 +80,10 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			classGenerator.generateClass("", "", request.getPackageName(), request);
-			controllerGenerator.generateControllerClass("", "", request.getPackageName(), request);
-			repositoryGenerator.generateRepositoryInterface("", "", request.getPackageName(), request);
-			serviceGenerator.generateServiceClass("", "", request.getPackageName(), request);
+			classGenerator.generateClass(GenerationContext.getGenerationContext(request), request);
+			controllerGenerator.generateControllerClass(GenerationContext.getGenerationContext(request), request);
+			repositoryGenerator.generateRepositoryInterface(GenerationContext.getGenerationContext(request), request);
+			serviceGenerator.generateServiceClass(GenerationContext.getGenerationContext(request), request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

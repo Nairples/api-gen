@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 
 import com.nairples.apigen.config.ApiGenConfig;
+import com.nairples.apigen.util.GenerationContext;
 
 
 @Component
@@ -27,8 +28,8 @@ public class GeneratorMainClassService extends Generator  {
 
 	
 	
-	public void generateMainClass(String projectName, String domainName, String packageName) throws ClassNotFoundException, IOException {
-		String className = domainName+"Application";
+	public void generateMainClass( GenerationContext context) throws ClassNotFoundException, IOException {
+		String className = context.getDomainName()+"Application";
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
 				.addAnnotation(SpringBootApplication.class)
 				.addModifiers(Modifier.PUBLIC);
@@ -45,10 +46,10 @@ public class GeneratorMainClassService extends Generator  {
 				.build();
 
 
-		JavaFile javaFile = JavaFile.builder(packageName, definedClass)
+		JavaFile javaFile = JavaFile.builder(context.getPackageName(), definedClass)
 				.build();
 
-		writeFile(projectName, domainName, javaFile);
+		writeFile(context, javaFile);
 	
 	}
 }

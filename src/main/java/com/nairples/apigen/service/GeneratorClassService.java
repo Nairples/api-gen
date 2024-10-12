@@ -23,6 +23,7 @@ import com.nairples.apigen.model.Field;
 import com.nairples.apigen.model.InputVariable;
 import com.nairples.apigen.model.Method;
 import com.nairples.apigen.util.CustomStringUtils;
+import com.nairples.apigen.util.GenerationContext;
 
 @Component
 public class GeneratorClassService extends Generator {
@@ -32,7 +33,7 @@ public class GeneratorClassService extends Generator {
         super(apiGenConfig);
     }
 
-    public void generateClass(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
+    public void generateClass(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
 
 		ArrayList<FieldSpec> fields = new ArrayList<>();
 		if (classDefinition.getFields() != null) {
@@ -136,10 +137,10 @@ public class GeneratorClassService extends Generator {
 		
 
 
-		JavaFile javaFile = JavaFile.builder(packageName, definedClass)
+		JavaFile javaFile = JavaFile.builder(context.getPackageName(), definedClass)
 				.build();
 
-		writeFile(projectName, domainName, javaFile);
+		writeFile(context, javaFile);
 	}
 
 	private Modifier getAccessModifier(ClassDefinition classDefinition) {

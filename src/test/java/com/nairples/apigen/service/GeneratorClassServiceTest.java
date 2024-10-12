@@ -42,12 +42,14 @@ import com.nairples.apigen.model.Method;
 import com.nairples.apigen.pom.Build;
 import com.nairples.apigen.pom.Parent;
 import com.nairples.apigen.pom.Project;
+import com.nairples.apigen.util.*;
+import com.nairples.apigen.util.GenerationContext.GenerationContextBuilder;
 
 
 @ExtendWith(MockitoExtension.class)
 class GeneratorClassServiceTest {
 
-    private final JavaFile mockJavaFile = mock(JavaFile.class);
+	private final JavaFile mockJavaFile = mock(JavaFile.class);
     @Mock
     MavenConfiguration mavenConfiguration;
     @Mock
@@ -78,7 +80,8 @@ class GeneratorClassServiceTest {
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
-        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
+        generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), 
+        		classDefinition);
 
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
@@ -109,7 +112,7 @@ class GeneratorClassServiceTest {
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
 
-        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
+        generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
@@ -133,7 +136,7 @@ class GeneratorClassServiceTest {
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
-        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
+        generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
         assertTrue(Files.exists(filePath)); // Check if the file is created
@@ -146,7 +149,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_invalidFieldType_throwsClassNotFoundException() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", "", any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(),  any());
 
         Method method = new Method();
         method.setName("getId");
@@ -166,13 +169,13 @@ class GeneratorClassServiceTest {
 
 
 
-        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition));
+        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition));
     }
 
     @Test
     void testGenerateClass_invalidMethodReturnType_throwsClassNotFoundException_NoPackage() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", "", any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(), any());
 
         // Arrange
         Method method = new Method();
@@ -185,14 +188,14 @@ class GeneratorClassServiceTest {
         classDefinition.setMethods(Collections.singletonList(method));
 
 
-        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", "", classDefinition));
+        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition));
     }
 
     @Test
     void testGenerateClass_nullClassDefinition_throwsNullPointerException() throws IOException, ClassNotFoundException {
-       doThrow(NullPointerException.class).when(generatorClassService).generateClass("", "", "", any());
+       doThrow(NullPointerException.class).when(generatorClassService).generateClass(GenerationContext.getEmptyGenerationContext(),  any());
 
-        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass("", "", "", null));
+        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass(GenerationContext.getEmptyGenerationContext(), null));
     }
 
     @Test
@@ -228,7 +231,7 @@ class GeneratorClassServiceTest {
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
         // Act
-        generatorClassService.generateClass("", "", "", classDefinition);
+        generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         // Assert
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/EmptyClass.java");
@@ -247,7 +250,7 @@ class GeneratorClassServiceTest {
 
 
         assertDoesNotThrow(() -> {
-        	generatorPomService.generatePomXmlFile("", "", mavenConfiguration);
+        	generatorPomService.generatePomXmlFile(GenerationContext.getEmptyGenerationContext(),  mavenConfiguration);
         });
     }
 

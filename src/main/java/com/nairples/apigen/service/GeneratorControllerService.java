@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.util.GenerationContext;
 
 @Component
 public class GeneratorControllerService extends Generator  {
@@ -24,7 +25,7 @@ public class GeneratorControllerService extends Generator  {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void generateControllerClass(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws IOException {
+	public void generateControllerClass(GenerationContext context, ClassDefinition classDefinition) throws IOException {
 		
 		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
 		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
@@ -37,10 +38,10 @@ public class GeneratorControllerService extends Generator  {
 		TypeSpec definedClass = classBuilder.build();
 
 
-		JavaFile javaFile = JavaFile.builder(packageName+".controller", definedClass)
+		JavaFile javaFile = JavaFile.builder(context.getPackageName()+".controller", definedClass)
 				.build();
 
-		writeFile(projectName, domainName, javaFile);
+		writeFile(context, javaFile);
 		
 	}
 

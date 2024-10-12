@@ -19,6 +19,7 @@ import com.nairples.apigen.pom.Parent;
 import com.nairples.apigen.pom.Plugin;
 import com.nairples.apigen.pom.Plugins;
 import com.nairples.apigen.pom.Project;
+import com.nairples.apigen.util.GenerationContext;
 
 @Component
 public class GeneratorPomService extends Generator {
@@ -30,7 +31,7 @@ public class GeneratorPomService extends Generator {
 	}
 
 
-	public void generateDefaultPomFile(Domain domain) {
+	public void generateDefaultPomFile(GenerationContext context, Domain domain) {
 		
 		MavenConfiguration mavenConfiguration = new MavenConfiguration();
 		mavenConfiguration.setArtifactId(domain.getName());
@@ -71,13 +72,13 @@ public class GeneratorPomService extends Generator {
 		// dep3.setVersion("");
 		dependencies.add(dep3 );
 		mavenConfiguration.setDependencies(dependencies );
-		generatePomXmlFile("", domain.getName(), mavenConfiguration);
+		generatePomXmlFile(context, mavenConfiguration);
 		
 		
 	}
 	
 	
-	public void generatePomXmlFile(String projectName, String domainName, MavenConfiguration mavenConfiguration) {
+	public void generatePomXmlFile(GenerationContext context, MavenConfiguration mavenConfiguration) {
 		try {
 			Project.ProjectBuilder projectBuilder = Project.builder()
 					.modelVersion("4.0.0")
@@ -123,12 +124,12 @@ public class GeneratorPomService extends Generator {
 							).build()
 					).build()
 			).build();
-			JAXBContext context = JAXBContext.newInstance(Project.class);
-			Marshaller marshaller = context.createMarshaller();
+			JAXBContext jaxBContext = JAXBContext.newInstance(Project.class);
+			Marshaller marshaller = jaxBContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
 					"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd");
-			marshaller.marshal(project, new File(getPath(projectName, domainName) + "pom.xml"));
+			marshaller.marshal(project, new File(getPath(context) + "pom.xml"));
 		}catch (Exception e){
 			//TODO
 		}

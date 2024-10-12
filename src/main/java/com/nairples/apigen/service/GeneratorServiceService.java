@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.util.GenerationContext;
 
 @Component
 public class GeneratorServiceService extends Generator {
@@ -23,16 +24,16 @@ public class GeneratorServiceService extends Generator {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void generateServiceClass(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws IOException {
+	public void generateServiceClass(GenerationContext context, ClassDefinition classDefinition) throws IOException {
 
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName() + "Service")
 				.addModifiers(Modifier.PUBLIC);
 
 		TypeSpec definedClass = classBuilder.build();
 
-		JavaFile javaFile = JavaFile.builder(packageName + ".service", definedClass).build();
+		JavaFile javaFile = JavaFile.builder(context.getPackageName() + ".service", definedClass).build();
 
-		writeFile(projectName, domainName, javaFile);
+		writeFile(context, javaFile);
 	}
 
 }

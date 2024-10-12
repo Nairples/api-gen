@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.util.GenerationContext;
 
 @ExtendWith(MockitoExtension.class)
 class GeneratorRepositoryServiceTest {
@@ -37,7 +38,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.model");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
+        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/model/repository/UserRepository.java")));
@@ -51,7 +52,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.complex");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
+        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/complex/repository/ComplexUserRepository.java")));
     }
@@ -64,7 +65,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.business.domain");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
+        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/business/domain/repository/OrderRepository.java")));
@@ -78,12 +79,12 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.store");
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
+        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
     }
-
+    
     @Test
     void testGenerateRepositoryInterface_classWithConstructor() throws IOException {
         // Arrange
@@ -92,7 +93,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.store");
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
+        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
