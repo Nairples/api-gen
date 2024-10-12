@@ -27,15 +27,20 @@ public class GeneratorDomainService {
 	@Autowired
 	private GeneratorPomService pomGenerator;
 	
+	@Autowired
+	private GeneratorMainClassService mainGenerator;
+	
 	public void generateDomain(Domain domain) throws ClassNotFoundException, IOException {
 		String domainName = domain.getName();
 		
 		
+		mainGenerator.generateMainClass("", domainName, domain.getPackageName());
+		
 		for (ClassDefinition classDefinition : domain.getClasses()) {
-			classGenerator.generateClass("", domainName, classDefinition);
-			controllerGenerator.generateControllerClass("", domainName, classDefinition);
-			repositoryGenerator.generateRepositoryInterface("", domainName, classDefinition);
-			serviceGenerator.generateServiceClass("", domainName, classDefinition);
+			classGenerator.generateClass("", domainName, domain.getPackageName(), classDefinition);
+			controllerGenerator.generateControllerClass("", domainName, domain.getPackageName(), classDefinition);
+			repositoryGenerator.generateRepositoryInterface("", domainName, domain.getPackageName(), classDefinition);
+			serviceGenerator.generateServiceClass("", domainName, domain.getPackageName(), classDefinition);
 		}
 
 		pomGenerator.generateDefaultPomFile(domain);

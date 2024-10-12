@@ -24,7 +24,7 @@ public class GeneratorRepositoryService extends Generator {
     }
 
 
-    public void generateRepositoryInterface(String projectName, String domainName, ClassDefinition classDefinition) throws IOException {
+    public void generateRepositoryInterface(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws IOException {
 
 		AnnotationSpec repositoryAnnotation = AnnotationSpec
 				.builder(ClassName.get("org.springframework.stereotype", "Repository")).build();
@@ -32,13 +32,13 @@ public class GeneratorRepositoryService extends Generator {
 				.addAnnotation(repositoryAnnotation)
 				.addSuperinterface(ParameterizedTypeName.get(
 						ClassName.get("org.springframework.data.jpa.repository", "JpaRepository"),
-						ClassName.get(classDefinition.getPackageName(), classDefinition.getName()),
+						ClassName.get(packageName, classDefinition.getName()),
 						ClassName.get(Long.class)))
 				.addModifiers(Modifier.PUBLIC);
 
 		TypeSpec definedClass = classBuilder.build();
 
-		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName() + ".repository", definedClass).build();
+		JavaFile javaFile = JavaFile.builder(packageName + ".repository", definedClass).build();
 
 		writeFile(projectName, domainName, javaFile);
 

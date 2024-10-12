@@ -24,7 +24,7 @@ public class GeneratorControllerService extends Generator  {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void generateControllerClass(String projectName, String domainName, ClassDefinition classDefinition) throws IOException {
+	public void generateControllerClass(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws IOException {
 		
 		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
 		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
@@ -37,7 +37,7 @@ public class GeneratorControllerService extends Generator  {
 		TypeSpec definedClass = classBuilder.build();
 
 
-		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName()+".controller", definedClass)
+		JavaFile javaFile = JavaFile.builder(packageName+".controller", definedClass)
 				.build();
 
 		writeFile(projectName, domainName, javaFile);

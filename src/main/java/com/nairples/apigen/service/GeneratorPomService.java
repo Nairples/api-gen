@@ -34,7 +34,7 @@ public class GeneratorPomService extends Generator {
 		
 		MavenConfiguration mavenConfiguration = new MavenConfiguration();
 		mavenConfiguration.setArtifactId(domain.getName());
-		mavenConfiguration.setGroupId(domain.getGroupId());
+		mavenConfiguration.setGroupId(domain.getPackageName());
 		mavenConfiguration.setVersion("0.0.1-SNAPSHOT");
 		mavenConfiguration.setDescription(domain.getDescription());
 		mavenConfiguration.setSpringBootVersion("3.3.4");

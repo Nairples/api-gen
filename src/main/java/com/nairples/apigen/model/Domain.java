@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class Domain {
     private String name;
-    private String groupId;
+    private String packageName;
     private String description;
     private List<ClassDefinition> classes;
     private List<Relationship> relationships;

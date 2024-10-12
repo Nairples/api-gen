@@ -78,7 +78,7 @@ class GeneratorClassServiceTest {
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
-        generatorClassService.generateClass("", "", classDefinition);
+        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
 
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
@@ -109,7 +109,7 @@ class GeneratorClassServiceTest {
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
 
-        generatorClassService.generateClass("", "", classDefinition);
+        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
 
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
@@ -133,7 +133,7 @@ class GeneratorClassServiceTest {
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
-        generatorClassService.generateClass("", "", classDefinition);
+        generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition);
 
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/TestEntity.java");
         assertTrue(Files.exists(filePath)); // Check if the file is created
@@ -146,7 +146,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_invalidFieldType_throwsClassNotFoundException() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", "", any());
 
         Method method = new Method();
         method.setName("getId");
@@ -166,13 +166,13 @@ class GeneratorClassServiceTest {
 
 
 
-        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", classDefinition));
+        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", classDefinition.getPackageName(), classDefinition));
     }
 
     @Test
     void testGenerateClass_invalidMethodReturnType_throwsClassNotFoundException_NoPackage() throws IOException, ClassNotFoundException {
 
-        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", any());
+        doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass("", "", "", any());
 
         // Arrange
         Method method = new Method();
@@ -185,14 +185,14 @@ class GeneratorClassServiceTest {
         classDefinition.setMethods(Collections.singletonList(method));
 
 
-        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", classDefinition));
+        assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass("", "", "", classDefinition));
     }
 
     @Test
     void testGenerateClass_nullClassDefinition_throwsNullPointerException() throws IOException, ClassNotFoundException {
-       doThrow(NullPointerException.class).when(generatorClassService).generateClass("", "", any());
+       doThrow(NullPointerException.class).when(generatorClassService).generateClass("", "", "", any());
 
-        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass("", "", null));
+        assertThrows(NullPointerException.class, () -> generatorClassService.generateClass("", "", "", null));
     }
 
     @Test
@@ -228,7 +228,7 @@ class GeneratorClassServiceTest {
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
 
         // Act
-        generatorClassService.generateClass("", "", classDefinition);
+        generatorClassService.generateClass("", "", "", classDefinition);
 
         // Assert
         Path filePath = Paths.get(customAPiConfig.getOutputDirectory()+"src/main/java/Test/EmptyClass.java");

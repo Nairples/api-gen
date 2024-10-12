@@ -32,7 +32,7 @@ public class GeneratorClassService extends Generator {
         super(apiGenConfig);
     }
 
-    public void generateClass(String projectName, String domainName, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
+    public void generateClass(String projectName, String domainName, String packageName, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
 
 		ArrayList<FieldSpec> fields = new ArrayList<>();
 		if (classDefinition.getFields() != null) {
@@ -136,7 +136,7 @@ public class GeneratorClassService extends Generator {
 		
 
 
-		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName(), definedClass)
+		JavaFile javaFile = JavaFile.builder(packageName, definedClass)
 				.build();
 
 		writeFile(projectName, domainName, javaFile);

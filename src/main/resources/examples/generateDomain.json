@@ -1,5 +1,6 @@
 {
     "name": "ProductDomain",
+    "packageName": "com.nairples.examples",
     "classes": [{
         "name": "Product",
         "abstract": false,
@@ -48,7 +49,6 @@
                     }
                 ]
             }
-        ],
-        "packageName": "com.nairples.examples"
+        ]
     }]
 }

@@ -37,7 +37,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.model");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition);
+        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/model/repository/UserRepository.java")));
@@ -51,7 +51,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.complex");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition);
+        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/complex/repository/ComplexUserRepository.java")));
     }
@@ -64,7 +64,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.business.domain");
 
 
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition);
+        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/business/domain/repository/OrderRepository.java")));
@@ -78,7 +78,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.store");
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition);
+        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
@@ -92,7 +92,7 @@ class GeneratorRepositoryServiceTest {
         classDefinition.setPackageName("com.example.store");
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition);
+        generatorRepositoryService.generateRepositoryInterface("", "", classDefinition.getPackageName(), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));

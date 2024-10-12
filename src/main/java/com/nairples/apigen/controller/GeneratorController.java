@@ -74,10 +74,10 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			classGenerator.generateClass("", "", request);
-			controllerGenerator.generateControllerClass("", "", request);
-			repositoryGenerator.generateRepositoryInterface("", "", request);
-			serviceGenerator.generateServiceClass("", "", request);
+			classGenerator.generateClass("", "", request.getPackageName(), request);
+			controllerGenerator.generateControllerClass("", "", request.getPackageName(), request);
+			repositoryGenerator.generateRepositoryInterface("", "", request.getPackageName(), request);
+			serviceGenerator.generateServiceClass("", "", request.getPackageName(), request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
