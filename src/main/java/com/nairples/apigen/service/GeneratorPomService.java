@@ -48,36 +48,41 @@ public class GeneratorPomService extends Generator {
 		Properties properties = new Properties();
 		properties.setJavaVersion("17");
 		mavenConfiguration.setProperties(properties );
-		
-		List<com.nairples.apigen.model.MavenConfiguration.Dependency> dependencies = new ArrayList<>();
-		com.nairples.apigen.model.MavenConfiguration.Dependency dep = new com.nairples.apigen.model.MavenConfiguration.Dependency();
-		dep.setGroupId("org.springframework.boot");
-		dep.setArtifactId("spring-boot-starter");
-		// dep.setVersion("");
-		dependencies.add(dep );
-		com.nairples.apigen.model.MavenConfiguration.Dependency dep1 = new com.nairples.apigen.model.MavenConfiguration.Dependency();
-		dep1.setGroupId("org.springframework.boot");
-		dep1.setArtifactId("spring-boot-starter-web");
-		// dep1.setVersion("");
-		dependencies.add(dep1 );
-		com.nairples.apigen.model.MavenConfiguration.Dependency dep2 = new com.nairples.apigen.model.MavenConfiguration.Dependency();
-		dep2.setGroupId("org.projectlombok");
-		dep2.setArtifactId("lombok");
-		// dep2.setVersion("");
-		dependencies.add(dep2 );
-		
-		com.nairples.apigen.model.MavenConfiguration.Dependency dep3 = new com.nairples.apigen.model.MavenConfiguration.Dependency();
-		dep3.setGroupId("org.springframework.boot");
-		dep3.setArtifactId("spring-boot-starter-data-jpa");
-		// dep3.setVersion("");
-		dependencies.add(dep3 );
+
+		List<MavenConfiguration.Dependency> dependencies = getDependencyList();
 		mavenConfiguration.setDependencies(dependencies );
 		generatePomXmlFile(context, mavenConfiguration);
 		
 		
 	}
-	
-	
+
+	private static List<MavenConfiguration.Dependency> getDependencyList() {
+		List<MavenConfiguration.Dependency> dependencies = new ArrayList<>();
+		MavenConfiguration.Dependency dep = new MavenConfiguration.Dependency();
+		dep.setGroupId("org.springframework.boot");
+		dep.setArtifactId("spring-boot-starter");
+		// dep.setVersion("");
+		dependencies.add(dep );
+		MavenConfiguration.Dependency dep1 = new MavenConfiguration.Dependency();
+		dep1.setGroupId("org.springframework.boot");
+		dep1.setArtifactId("spring-boot-starter-web");
+		// dep1.setVersion("");
+		dependencies.add(dep1 );
+		MavenConfiguration.Dependency dep2 = new MavenConfiguration.Dependency();
+		dep2.setGroupId("org.projectlombok");
+		dep2.setArtifactId("lombok");
+		// dep2.setVersion("");
+		dependencies.add(dep2 );
+
+		MavenConfiguration.Dependency dep3 = new MavenConfiguration.Dependency();
+		dep3.setGroupId("org.springframework.boot");
+		dep3.setArtifactId("spring-boot-starter-data-jpa");
+		// dep3.setVersion("");
+		dependencies.add(dep3 );
+		return dependencies;
+	}
+
+
 	public void generatePomXmlFile(GenerationContext context, MavenConfiguration mavenConfiguration) {
 		try {
 			Project.ProjectBuilder projectBuilder = Project.builder()

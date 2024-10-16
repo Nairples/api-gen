@@ -2,6 +2,8 @@ package com.nairples.apigen.controller;
 
 import java.io.IOException;
 
+import com.nairples.apigen.docker.DockerConfiguration;
+import com.nairples.apigen.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,6 @@ import com.nairples.apigen.model.ApiGenReq;
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Domain;
 import com.nairples.apigen.model.MavenConfiguration;
-import com.nairples.apigen.service.GeneratorClassService;
-import com.nairples.apigen.service.GeneratorControllerService;
-import com.nairples.apigen.service.GeneratorDomainService;
-import com.nairples.apigen.service.GeneratorPomService;
-import com.nairples.apigen.service.GeneratorRepositoryService;
-import com.nairples.apigen.service.GeneratorServiceService;
 import com.nairples.apigen.util.GenerationContext;
 
 
@@ -44,6 +40,9 @@ public class GeneratorController {
 	
 	@Autowired
 	private GeneratorServiceService serviceGenerator;
+
+	@Autowired
+	private DockerConfigGenerator dockerConfigGenerator;
 	
 	@PostMapping("/generate")
 	public ResponseEntity<String> generator(@RequestBody ApiGenReq request) {
@@ -71,6 +70,11 @@ public class GeneratorController {
 	@PostMapping("/generate/pom")
 	public ResponseEntity<String> generatorPom(@RequestBody MavenConfiguration request) {
 		pomGenerator.generatePomXmlFile(GenerationContext.getEmptyGenerationContext(), request);
+		return new ResponseEntity<>("", HttpStatus.CREATED);
+	}
+	@PostMapping("/generate/docker-files")
+	public ResponseEntity<String> generatorDockerConfigs(@RequestBody DockerConfiguration request) {
+		dockerConfigGenerator.generateDockerConfigs(request);
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
