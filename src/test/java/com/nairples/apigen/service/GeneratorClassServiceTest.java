@@ -67,15 +67,18 @@ class GeneratorClassServiceTest {
 
     @Test
     void testGenerateClass_generatesCorrectFields() throws ClassNotFoundException, IOException {
-        Field field = new Field();
-        field.setName("id");
-        field.setType("java.lang.Integer");
-        field.setAccessModifier(Modifier.PRIVATE.toString());
-
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("TestEntity");
-        classDefinition.setFields(Collections.singletonList(field));
-        classDefinition.setPackageName("Test");
+        Field field = Field
+        		.builder()
+        		.name("id")
+        		.type("java.lang.Integer")
+        		.accessModifier(Modifier.PRIVATE.toString())
+        		.build();
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("TestEntity")
+        		.fields(Collections.singletonList(field))
+        		.packageName("Test")
+        		.build();
 
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
@@ -101,12 +104,14 @@ class GeneratorClassServiceTest {
         method.setReturnType("java.lang.Integer");
         method.setInputVariables(List.of());
         method.setAccessModifier(Modifier.PUBLIC.toString());
-
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("TestEntity");
-        classDefinition.setPackageName("Test");
-        classDefinition.setMethods(Collections.singletonList(method));
-
+        
+        
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("TestEntity")
+        		.methods(Collections.singletonList(method))
+        		.packageName("Test")
+        		.build();
 
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
@@ -129,9 +134,12 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_writesToFileSystem() throws ClassNotFoundException, IOException {
 
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("TestEntity");
-        classDefinition.setPackageName("Test");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("TestEntity")
+        		.packageName("Test")
+        		.build();
+
 
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);
@@ -158,17 +166,19 @@ class GeneratorClassServiceTest {
         method.setAccessModifier(Modifier.PUBLIC.toString());
 
         // Arrange
-        Field field = new Field();
-        field.setName("invalidField");
-        field.setType("non.existent.ClassType"); // Invalid class type
-
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("InvalidFieldClass");
-        classDefinition.setFields(Collections.singletonList(field));
-        classDefinition.setMethods(Collections.singletonList(method));
-
-
-
+        Field field = Field
+        		.builder()
+        		.name("invalidField")
+        		.type("non.existent.ClassType")
+        		.build();
+        
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("InvalidFieldClass")
+        		.fields(Collections.singletonList(field))
+        		.methods(Collections.singletonList(method))
+        		.build();
+        
         assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition));
     }
 
@@ -183,9 +193,11 @@ class GeneratorClassServiceTest {
         method.setReturnType("non.existent.ReturnType");
         method.setInputVariables(List.of());
 
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("InvalidMethodClass");
-        classDefinition.setMethods(Collections.singletonList(method));
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("InvalidMethodClass")
+        		.methods(Collections.singletonList(method))
+        		.build();
 
 
         assertThrows(ClassNotFoundException.class, () -> generatorClassService.generateClass(GenerationContext.getGenerationContext(classDefinition), classDefinition));
@@ -201,8 +213,7 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_ioExceptionDuringFileWriting_throwsIOException() throws ClassNotFoundException, IOException {
         // Arrange
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("TestEntity");
+        ClassDefinition classDefinition = ClassDefinition.builder().name("TestEntity").build();
 
         doThrow(new IOException("Simulated IOException")).when(mockJavaFile).writeTo(Mockito.any(Path.class));
 
@@ -223,9 +234,11 @@ class GeneratorClassServiceTest {
 
 
         // Arrange
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("EmptyClass"); // No fields and methods
-        classDefinition.setPackageName("Test");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("EmptyClass") // No fields and methods
+    			.packageName("Test")
+    			.build();
 
         ApiGenConfig customAPiConfig =new ApiGenConfig();
         GeneratorClassService generatorClassService = new GeneratorClassService(customAPiConfig);

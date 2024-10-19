@@ -44,6 +44,9 @@ public class GeneratorController {
 	@Autowired
 	private DockerConfigGenerator dockerConfigGenerator;
 	
+	@Autowired
+	private GeneratorDBEntityService dbEntityService;
+	
 	@PostMapping("/generate")
 	public ResponseEntity<String> generator(@RequestBody ApiGenReq request) {
 		return new ResponseEntity<>("", HttpStatus.CREATED);
@@ -84,10 +87,12 @@ public class GeneratorController {
 	public ResponseEntity<String> generatorClass(@RequestBody ClassDefinition request) {
 		
 		try {
-			classGenerator.generateClass(GenerationContext.getGenerationContext(request), request);
-			controllerGenerator.generateControllerClass(GenerationContext.getGenerationContext(request), request);
-			repositoryGenerator.generateRepositoryInterface(GenerationContext.getGenerationContext(request), request);
-			serviceGenerator.generateServiceClass(GenerationContext.getGenerationContext(request), request);
+			GenerationContext generationContext = GenerationContext.getGenerationContext(request);
+			classGenerator.generateClass(generationContext, request);
+			ClassDefinition dbEntity = dbEntityService.generateDBEntity(generationContext, request);
+			repositoryGenerator.generateRepositoryInterface(generationContext, request);
+			serviceGenerator.generateServiceClass(generationContext, request, dbEntity);
+			controllerGenerator.generateControllerClass(generationContext, request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -34,7 +34,7 @@ public class GeneratorRepositoryService extends Generator {
 				.addAnnotation(repositoryAnnotation)
 				.addSuperinterface(ParameterizedTypeName.get(
 						ClassName.get("org.springframework.data.jpa.repository", "JpaRepository"),
-						ClassName.get(packageName , classDefinition.getName()),
+						ClassName.get(packageName+"."+classDefinition.getPackageName() , classDefinition.getName()),
 						ClassName.get(Long.class)))
 				.addModifiers(Modifier.PUBLIC);
 

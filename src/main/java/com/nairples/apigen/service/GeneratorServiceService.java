@@ -24,7 +24,7 @@ public class GeneratorServiceService extends Generator {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void generateServiceClass(GenerationContext context, ClassDefinition classDefinition) throws IOException {
+	public void generateServiceClass(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity) throws IOException {
 
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName() + "Service")
 				.addModifiers(Modifier.PUBLIC);

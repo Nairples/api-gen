@@ -31,15 +31,20 @@ public class GeneratorDomainService {
 	@Autowired
 	private GeneratorMainClassService mainGenerator;
 	
+	@Autowired
+	private GeneratorDBEntityService dbEntityService;
+	
 	public void generateDomain(GenerationContext context, Domain domain) throws ClassNotFoundException, IOException {
 		
 		mainGenerator.generateMainClass(context);
 		
 		for (ClassDefinition classDefinition : domain.getClasses()) {
+			classDefinition.setPackageName("model");
 			classGenerator.generateClass(context, classDefinition);
+			ClassDefinition dbEntity = dbEntityService.generateDBEntity(context, classDefinition);
+			repositoryGenerator.generateRepositoryInterface(context, dbEntity);
+			serviceGenerator.generateServiceClass(context, classDefinition, dbEntity);
 			controllerGenerator.generateControllerClass(context, classDefinition);
-			repositoryGenerator.generateRepositoryInterface(context, classDefinition);
-			serviceGenerator.generateServiceClass(context, classDefinition);
 		}
 
 		pomGenerator.generateDefaultPomFile(context, domain);

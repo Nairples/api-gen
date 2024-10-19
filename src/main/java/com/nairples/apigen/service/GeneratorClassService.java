@@ -8,8 +8,10 @@ import java.util.List;
 import javax.lang.model.element.Modifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.javapoet.AnnotationSpec;
 import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.FieldSpec;
+import org.springframework.javapoet.FieldSpec.Builder;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.ParameterSpec;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.nairples.apigen.config.ApiGenConfig;
+import com.nairples.apigen.model.Annotation;
+import com.nairples.apigen.model.AnnotationMember;
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.model.Field;
 import com.nairples.apigen.model.InputVariable;
@@ -38,7 +42,13 @@ public class GeneratorClassService extends Generator {
 		ArrayList<FieldSpec> fields = new ArrayList<>();
 		if (classDefinition.getFields() != null) {
 			for (Field field : classDefinition.getFields()) {
-				FieldSpec fieldSpec = FieldSpec.builder(ClassName.get("", field.getType()), field.getName()).build();
+				Builder fieldSpecBuilder = FieldSpec
+						.builder(ClassName.get("", field.getType()), field.getName());
+				
+				if( StringUtils.hasLength(field.getAccessModifier())){
+					fieldSpecBuilder.addModifiers(getAccessModifier(field.getAccessModifier()));
+				}
+				
 				if(field.isGet()) {
 					Method getMethod = new Method();
 					getMethod.setName("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()));
@@ -51,7 +61,7 @@ public class GeneratorClassService extends Generator {
 					if(classDefinition.getMethods() == null) {
 						classDefinition.setMethods(new ArrayList<>());
 					}
-					classDefinition.getMethods().add(getMethod );
+					classDefinition = classDefinition.toBuilder().method(getMethod ).build();
 				}
 				
 				if(field.isSet()) {
@@ -66,10 +76,25 @@ public class GeneratorClassService extends Generator {
 					fieldInput.setType(field.getType());
 					setMethod.setInputVariables(List.of(fieldInput));
 					setMethod.setReturnType("void");
-					classDefinition.getMethods().add(setMethod );
+					classDefinition = classDefinition.toBuilder().method(setMethod ).build();
 				}
 				
-				fields.add(fieldSpec);
+				if( field.getAnnotations() != null ) {
+					for (Annotation annotation : field.getAnnotations()) {
+						AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get(annotation.getPackageName(), annotation.getName())).build();
+						if(annotation.getMembers() != null) {
+							for (AnnotationMember annotationMember : annotation.getMembers()) {
+								annotationSpec = annotationSpec
+										.toBuilder()
+										.addMember(annotationMember.getMemberName(),  "$S", annotationMember.getMemberValue())
+										.build();
+							}
+						}
+						fieldSpecBuilder.addAnnotation(annotationSpec).build();
+					}	
+				}
+				
+				fields.add(fieldSpecBuilder.build());
 			}
 		}
 
@@ -98,6 +123,21 @@ public class GeneratorClassService extends Generator {
 
 		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName())
 				.addModifiers(getAccessModifier(classDefinition));
+		
+		if( classDefinition.getAnnotations() != null ) {
+			for (Annotation annotation : classDefinition.getAnnotations()) {
+				AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get(annotation.getPackageName(), annotation.getName())).build();
+				if(annotation.getMembers() != null) {
+					for (AnnotationMember annotationMember : annotation.getMembers()) {
+						annotationSpec = annotationSpec
+								.toBuilder()
+								.addMember(annotationMember.getMemberName(),  "$S", annotationMember.getMemberValue())
+								.build();
+					}
+				}
+				classBuilder.addAnnotation(annotationSpec);
+			}	
+		}
 
 
 		for (FieldSpec fs : fields) {
@@ -137,16 +177,22 @@ public class GeneratorClassService extends Generator {
 		
 
 
-		JavaFile javaFile = JavaFile.builder(context.getPackageName(), definedClass)
+		JavaFile javaFile = JavaFile.builder(context.getPackageName()+"."+classDefinition.getPackageName(), definedClass)
 				.build();
 
 		writeFile(context, javaFile);
 	}
+    
+    
+    private Modifier getAccessModifier(ClassDefinition classDefinition) {
+    	String accessModifier = classDefinition.getAccessModifier();
+    	return getAccessModifier(accessModifier);
+    }
 
-	private Modifier getAccessModifier(ClassDefinition classDefinition) {
+	private Modifier getAccessModifier(String accessModifier) {
 		
 		Modifier modifier = null;
-		String accessModifier = classDefinition.getAccessModifier();
+		
 
 		if (StringUtils.hasLength(accessModifier)) {
 			switch (accessModifier) {

@@ -33,9 +33,11 @@ class GeneratorRepositoryServiceTest {
     @Test
     void testGenerateRepositoryInterface_validSimpleClassName() throws IOException {
 
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("User");
-        classDefinition.setPackageName("com.example.model");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("User")
+        		.packageName("com.example.model")
+        		.build();
 
 
         generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
@@ -47,9 +49,11 @@ class GeneratorRepositoryServiceTest {
     @Test
     void testGenerateRepositoryInterface_validComplexClassName() throws IOException {
 
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("ComplexUser");
-        classDefinition.setPackageName("com.example.complex");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("ComplexUser")
+        		.packageName("com.example.complex")
+        		.build();
 
 
         generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
@@ -60,9 +64,11 @@ class GeneratorRepositoryServiceTest {
     @Test
     void testGenerateRepositoryInterface_nestedPackageName() throws IOException {
 
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("Order");
-        classDefinition.setPackageName("com.example.business.domain");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("Order")
+        		.packageName("com.example.business.domain")
+        		.build();
 
 
         generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
@@ -74,9 +80,11 @@ class GeneratorRepositoryServiceTest {
     @Test
     void testGenerateRepositoryInterface_noMethods() throws IOException {
         // Arrange
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("Product");
-        classDefinition.setPackageName("com.example.store");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("Product")
+        		.packageName("com.example.store")
+        		.build();
 
         // Act
         generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
@@ -88,9 +96,11 @@ class GeneratorRepositoryServiceTest {
     @Test
     void testGenerateRepositoryInterface_classWithConstructor() throws IOException {
         // Arrange
-        ClassDefinition classDefinition = new ClassDefinition();
-        classDefinition.setName("Product");
-        classDefinition.setPackageName("com.example.store");
+        ClassDefinition classDefinition = ClassDefinition
+        		.builder()
+        		.name("Product")
+        		.packageName("com.example.store")
+        		.build();
 
         // Act
         generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
