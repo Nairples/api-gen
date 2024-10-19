@@ -90,7 +90,7 @@ public class GeneratorClassService extends Generator {
 										.build();
 							}
 						}
-						fieldSpecBuilder.addAnnotation(annotationSpec).build();
+						fieldSpecBuilder.addAnnotation(annotationSpec);
 					}	
 				}
 				
@@ -102,22 +102,18 @@ public class GeneratorClassService extends Generator {
 		if (classDefinition.getMethods() != null) {
 			for (Method method : classDefinition.getMethods()) {
 				
-				MethodSpec mSpec = MethodSpec.methodBuilder(method.getName())
+				org.springframework.javapoet.MethodSpec.Builder mSpecBuilder = MethodSpec.methodBuilder(method.getName())
 						.returns(ClassName.get("", method.getReturnType()))
 						.addModifiers(Modifier.PUBLIC)
-						
-						.addCode(method.getCode() != null ? method.getCode() : "return null;\n")
-						.build();
+						.addCode(method.getCode() != null ? method.getCode() : "return null;\n");
 				
 				for (InputVariable inputVariable : method.getInputVariables()) {
 					ParameterSpec parameterSpec = ParameterSpec.builder(ClassName.get("", inputVariable.getType()), inputVariable.getName())
 							.build();
-					mSpec = mSpec.toBuilder()
-							.addParameter(parameterSpec)
-							.build();
+					mSpecBuilder.addParameter(parameterSpec);
 				}
 				
-				methods.add(mSpec);
+				methods.add(mSpecBuilder.build());
 			}
 		}
 
@@ -169,14 +165,7 @@ public class GeneratorClassService extends Generator {
 			}
 		}
 		
-		
-
-
 		TypeSpec definedClass = classBuilder.build();
-		
-		
-
-
 		JavaFile javaFile = JavaFile.builder(context.getPackageName()+"."+classDefinition.getPackageName(), definedClass)
 				.build();
 

@@ -2,6 +2,7 @@ package com.nairples.apigen.service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import javax.lang.model.element.Modifier;
 
@@ -11,29 +12,33 @@ import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
 
 import com.nairples.apigen.config.ApiGenConfig;
+import com.nairples.apigen.model.Annotation;
+import com.nairples.apigen.model.AnnotationMember;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.Field;
 import com.nairples.apigen.util.GenerationContext;
 
 @Component
-public class GeneratorServiceService extends Generator {
+public class GeneratorServiceService {
+
+	@Autowired
+	private GeneratorClassService classGenerator;
 
 	
 
-	protected GeneratorServiceService(ApiGenConfig apiGenConfig) {
-		super(apiGenConfig);
-		// TODO Auto-generated constructor stub
-	}
+	public void generateServiceClass(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity) throws IOException, ClassNotFoundException {
 
-	public void generateServiceClass(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity) throws IOException {
-
-		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName() + "Service")
-				.addModifiers(Modifier.PUBLIC);
-
-		TypeSpec definedClass = classBuilder.build();
-
-		JavaFile javaFile = JavaFile.builder(context.getPackageName() + ".service", definedClass).build();
-
-		writeFile(context, javaFile);
+		
+		ClassDefinition classService = classDefinition
+				.toBuilder()
+				.packageName("service")
+				.name(classDefinition.getName()+"Service")
+				.clearAnnotations()
+				.clearMethods()
+				.clearFields()
+				.clearImplementsInterfaces()
+				.build();
+		classGenerator.generateClass(context, classService);
 	}
 
 }

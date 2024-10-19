@@ -1,47 +1,50 @@
 package com.nairples.apigen.service;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-
-import javax.lang.model.element.Modifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.javapoet.AnnotationSpec;
-import org.springframework.javapoet.JavaFile;
-import org.springframework.javapoet.TypeSpec;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.nairples.apigen.config.ApiGenConfig;
+import org.springframework.stereotype.Component;
+
+
+import com.nairples.apigen.model.Annotation;
+import com.nairples.apigen.model.AnnotationMember;
 import com.nairples.apigen.model.ClassDefinition;
 import com.nairples.apigen.util.GenerationContext;
 
 @Component
-public class GeneratorControllerService extends Generator  {
+public class GeneratorControllerService {
 	
-	protected GeneratorControllerService(ApiGenConfig apiGenConfig) {
-		super(apiGenConfig);
-		// TODO Auto-generated constructor stub
-	}
+	@Autowired
+	private GeneratorClassService generatorClass;
 
-	public void generateControllerClass(GenerationContext context, ClassDefinition classDefinition) throws IOException {
+	public void generateControllerClass(GenerationContext context, ClassDefinition classDefinition) throws IOException, ClassNotFoundException {
 		
-		AnnotationSpec requestMappingAnnotation = AnnotationSpec.builder(RequestMapping.class)
-		        .addMember("value", "$S", "/"+ classDefinition.getName().toLowerCase())  
-		        .build();
-		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName()+"Controller")
-				.addAnnotation(RestController.class)
-				.addAnnotation(requestMappingAnnotation )
-				.addModifiers(Modifier.PUBLIC);
-		
-		TypeSpec definedClass = classBuilder.build();
-
-
-		JavaFile javaFile = JavaFile.builder(context.getPackageName()+".controller", definedClass)
+		ClassDefinition classService = classDefinition
+				.toBuilder()
+				.packageName("controller")
+				.name(classDefinition.getName()+"Controller")
+				.clearAnnotations()
+				.annotation(Annotation
+						.builder()
+						.name("RestController")
+						.packageName("org.springframework.web.bind.annotation")
+						.build())
+				.annotation(Annotation
+						.builder()
+						.name("RequestMapping")
+						.packageName("org.springframework.web.bind.annotation")
+						.member(AnnotationMember
+								.builder()
+								.memberName("value")
+								.memberValue("/"+ classDefinition.getName().toLowerCase())
+								.build())
+						.build())
+				.clearMethods()
+				.clearFields()
+				.clearImplementsInterfaces()
 				.build();
-
-		writeFile(context, javaFile);
+		generatorClass.generateClass(context, classService);
 		
 	}
 

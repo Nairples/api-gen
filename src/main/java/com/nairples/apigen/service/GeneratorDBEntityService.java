@@ -25,7 +25,7 @@ public class GeneratorDBEntityService {
 				.toBuilder()
 				.packageName("entity")
 				.name(classDefinition.getName()+"Entity")
-				.annotations(new ArrayList<Annotation>())
+				.clearAnnotations()
 				.annotation(Annotation.builder()
 						.packageName("jakarta.persistence")
 						.name("Entity")
@@ -45,15 +45,13 @@ public class GeneratorDBEntityService {
 		
 		if(dbEntityDefinition.getFields() != null ) {
 			for (Field field : dbEntityDefinition.getFields()) {
-				field.setAnnotations(null);
-				field = field
-						.toBuilder()
-						.annotation(Annotation
-								.builder()
-								.packageName("jakarta.persistence")
-								.name("Column")
-								.build())
-						.build();
+				ArrayList<Annotation> annotations = new ArrayList<Annotation>();
+				annotations.add(Annotation
+						.builder()
+						.packageName("jakarta.persistence")
+						.name("Column")
+						.build());
+				field.setAnnotations(annotations);
 			}
 		}
 		
