@@ -1,55 +1,60 @@
 package com.nairples.apigen.service;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.lang.model.element.Modifier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.javapoet.ClassName;
-import org.springframework.javapoet.JavaFile;
-import org.springframework.javapoet.MethodSpec;
-import org.springframework.javapoet.ParameterSpec;
-import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
 
-
-import com.nairples.apigen.config.ApiGenConfig;
+import com.nairples.apigen.model.Annotation;
+import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.CodeBlock;
+import com.nairples.apigen.model.InputVariable;
+import com.nairples.apigen.model.Method;
 import com.nairples.apigen.util.GenerationContext;
 
 
-@Component
-public class GeneratorMainClassService extends Generator  {
 
-	protected GeneratorMainClassService(ApiGenConfig apiGenConfig) {
-		super(apiGenConfig);
-		// TODO Auto-generated constructor stub
-	}
+@Component
+public class GeneratorMainClassService {
+	
+	@Autowired
+	private GeneratorClassService generatorClass;
 
 	
 	
 	public void generateMainClass( GenerationContext context) throws ClassNotFoundException, IOException {
 		String className = context.getDomainName()+"Application";
-		TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
-				.addAnnotation(SpringBootApplication.class)
-				.addModifiers(Modifier.PUBLIC);
 		
-		MethodSpec methodSpec = MethodSpec.methodBuilder("main")
-				.addCode("$T.run($L.class, args);", SpringApplication.class, className)
-				.addModifiers(Modifier.PUBLIC)
-				.addModifiers(Modifier.STATIC)
-				.returns(void.class)
-				.addParameter(ParameterSpec.builder(ClassName.get("", "String[]"), "args").build())
+		InputVariable inputParam = new InputVariable();
+		inputParam.setName("args");
+		inputParam.setType("String[]");
+		ClassDefinition mainClassDefinition = ClassDefinition.builder()
+				.name(className)
+				.packageName("")
+				.annotation(Annotation.builder()
+						.packageName("org.springframework.boot.autoconfigure")
+						.name("SpringBootApplication")
+						.build())
+				.accessModifier(Modifier.PUBLIC.name().toLowerCase())
+				.method(Method
+						.builder()
+						.isStatic(true)
+						.name("main")
+						.accessModifier(Modifier.PUBLIC.name().toLowerCase())
+						.code(CodeBlock.builder()
+								.code("$T.run($L.class, args);")
+								.arguments(new Object[]{SpringApplication.class, className})
+								.build())
+						.returnType("void")
+						.inputVariables(Collections.singletonList(inputParam ))
+						.build()
+						)
 				.build();
-		TypeSpec definedClass = classBuilder
-				.addMethod(methodSpec )
-				.build();
-
-
-		JavaFile javaFile = JavaFile.builder(context.getPackageName(), definedClass)
-				.build();
-
-		writeFile(context, javaFile);
+		generatorClass.generateClass(context, mainClassDefinition);
 	
 	}
 }

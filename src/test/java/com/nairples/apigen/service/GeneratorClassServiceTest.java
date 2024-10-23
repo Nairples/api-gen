@@ -99,11 +99,11 @@ class GeneratorClassServiceTest {
     @Test
     void testGenerateClass_generatesCorrectMethods() throws ClassNotFoundException, IOException {
 
-        Method method = new Method();
-        method.setName("getId");
-        method.setReturnType("java.lang.Integer");
-        method.setInputVariables(List.of());
-        method.setAccessModifier(Modifier.PUBLIC.toString());
+        Method method = Method.builder()
+        		.name("getId")
+        		.returnType("java.lang.Integer")
+        		.inputVariables(List.of())
+        		.accessModifier(Modifier.PUBLIC.toString()).build();
         
         
         ClassDefinition classDefinition = ClassDefinition
@@ -159,11 +159,12 @@ class GeneratorClassServiceTest {
 
         doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any(),  any());
 
-        Method method = new Method();
-        method.setName("getId");
-        method.setReturnType("java.lang.Integer");
-        method.setInputVariables(List.of());
-        method.setAccessModifier(Modifier.PUBLIC.toString());
+        Method method = Method.builder()
+	        .name("getId")
+	        .returnType("java.lang.Integer")
+	        .inputVariables(List.of())
+	        .accessModifier(Modifier.PUBLIC.toString())
+	        .build();
 
         // Arrange
         Field field = Field
@@ -188,10 +189,11 @@ class GeneratorClassServiceTest {
         doThrow(ClassNotFoundException.class).when(generatorClassService).generateClass(any(), any());
 
         // Arrange
-        Method method = new Method();
-        method.setName("invalidMethod");
-        method.setReturnType("non.existent.ReturnType");
-        method.setInputVariables(List.of());
+        Method method = Method.builder()
+	        .name("invalidMethod")
+	        .returnType("non.existent.ReturnType")
+	        .inputVariables(List.of())
+	        .build();
 
         ClassDefinition classDefinition = ClassDefinition
         		.builder()

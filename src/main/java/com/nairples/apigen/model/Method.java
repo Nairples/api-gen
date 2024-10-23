@@ -2,9 +2,11 @@ package com.nairples.apigen.model;
 
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Method {
     private String name;
     private String returnType;
@@ -13,5 +15,5 @@ public class Method {
     private boolean isFinal;
     private List<String> throwsList;
     private List<InputVariable> inputVariables;
-    private String code;
+    private CodeBlock code;
 }
