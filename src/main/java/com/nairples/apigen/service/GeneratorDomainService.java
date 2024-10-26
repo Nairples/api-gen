@@ -43,8 +43,8 @@ public class GeneratorDomainService {
 			classGenerator.generateClass(context, classDefinition);
 			ClassDefinition dbEntity = dbEntityService.generateDBEntity(context, classDefinition);
 			repositoryGenerator.generateRepositoryInterface(context, dbEntity);
-			serviceGenerator.generateServiceClass(context, classDefinition, dbEntity);
-			controllerGenerator.generateControllerClass(context, classDefinition);
+			ClassDefinition classService = serviceGenerator.generateServiceClass(context, classDefinition, dbEntity);
+			controllerGenerator.generateControllerClass(context, classDefinition, classService);
 		}
 
 		pomGenerator.generateDefaultPomFile(context, domain);
