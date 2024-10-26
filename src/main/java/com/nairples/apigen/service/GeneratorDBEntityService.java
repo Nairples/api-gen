@@ -23,7 +23,7 @@ public class GeneratorDBEntityService {
 		
 		ClassDefinition dbEntityDefinition = classDefinition
 				.toBuilder()
-				.packageName("entity")
+				.packageName(context.getPackageName()+".entity")
 				.name(classDefinition.getName()+"Entity")
 				.clearAnnotations()
 				.clearMethods()

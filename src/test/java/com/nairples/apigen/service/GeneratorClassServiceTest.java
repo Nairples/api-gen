@@ -101,7 +101,7 @@ class GeneratorClassServiceTest {
 
         Method method = Method.builder()
         		.name("getId")
-        		.returnType("java.lang.Integer")
+        		.returnType(ClassDefinition.builder().name("java.lang.Integer").build())
         		.inputVariables(List.of())
         		.accessModifier(Modifier.PUBLIC.toString()).build();
         
@@ -161,7 +161,7 @@ class GeneratorClassServiceTest {
 
         Method method = Method.builder()
 	        .name("getId")
-	        .returnType("java.lang.Integer")
+	        .returnType(ClassDefinition.builder().name("java.lang.Integer").build())
 	        .inputVariables(List.of())
 	        .accessModifier(Modifier.PUBLIC.toString())
 	        .build();
@@ -191,7 +191,7 @@ class GeneratorClassServiceTest {
         // Arrange
         Method method = Method.builder()
 	        .name("invalidMethod")
-	        .returnType("non.existent.ReturnType")
+	        .returnType(ClassDefinition.builder().name("non.existent.ReturnType").build())
 	        .inputVariables(List.of())
 	        .build();
 

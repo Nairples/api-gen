@@ -83,11 +83,7 @@ public class GeneratorClassService extends Generator {
 		}
 		
 		TypeSpec definedClass = classBuilder.build();
-		String packageName = context.getPackageName();
-		if(StringUtils.hasLength(classDefinition.getPackageName())) {
-			packageName = packageName + "."+classDefinition.getPackageName();
-		}
-		JavaFile javaFile = JavaFile.builder(packageName, definedClass)
+		JavaFile javaFile = JavaFile.builder(classDefinition.getPackageName(), definedClass)
 				.build();
 
 		writeFile(context, javaFile);
@@ -154,15 +150,16 @@ public class GeneratorClassService extends Generator {
 			if(classDefinition.getMethods() == null) {
 				classDefinition.setMethods(new ArrayList<>());
 			}
-			InputVariable fieldInput = new InputVariable();
-			fieldInput.setName(field.getName());
-			fieldInput.setType(field.getClassName());
+			InputVariable fieldInput = InputVariable
+					.builder().name(field.getName())
+					.className(field.getClassName())
+					.build();
 			Method setMethod = Method
 					.builder()
 					.name("set"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("this."+field.getName()+" = " + field.getName()+"; \n").build())
 					.inputVariables(List.of(fieldInput))
-					.returnType("void").build();
+					.returnType(ClassDefinition.builder().name("void").build()).build();
 			classDefinition.setMethods(new ArrayList<>(classDefinition.getMethods()));
 			classDefinition.getMethods().add(setMethod );
 		}
@@ -171,15 +168,16 @@ public class GeneratorClassService extends Generator {
 	private void generateGetter(ClassDefinition classDefinition, Field field) {
 		
 		if(field.isGet()) {
-			InputVariable fieldInput = new InputVariable();
-			fieldInput.setName(field.getName());
-			fieldInput.setType(field.getClassName());
+			InputVariable fieldInput = InputVariable
+					.builder().name(field.getName())
+					.className(field.getClassName())
+					.build();
 			Method getMethod = Method
 					.builder()
 					.name("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("return "+field.getName()+";\n").build())
 					.inputVariables(List.of(fieldInput))
-					.returnType(field.getClassName())
+					.returnType(ClassDefinition.builder().name(field.getClassName()).build())
 					.build();
 			if(classDefinition.getMethods() == null) {
 				classDefinition.setMethods(new ArrayList<>());
@@ -205,7 +203,7 @@ public class GeneratorClassService extends Generator {
 
 	private void addMethod(ArrayList<MethodSpec> methods, Method method) {
 		org.springframework.javapoet.MethodSpec.Builder mSpecBuilder = MethodSpec.methodBuilder(method.getName())
-				.returns(ClassName.get("", method.getReturnType()))
+				.returns(ClassName.get(method.getReturnType().getPackageName() != null ? method.getReturnType().getPackageName() : "", method.getReturnType().getName()))
 				.addModifiers(Modifier.PUBLIC);
 		
 		if(method.getCode() != null && method.getCode().getArguments() != null) {
@@ -215,7 +213,9 @@ public class GeneratorClassService extends Generator {
 		}
 		
 		for (InputVariable inputVariable : method.getInputVariables()) {
-			ParameterSpec parameterSpec = ParameterSpec.builder(ClassName.get("", inputVariable.getType()), inputVariable.getName())
+			ParameterSpec parameterSpec = ParameterSpec.builder(ClassName.get(inputVariable.getPackageName() != null ? inputVariable.getPackageName(): "", 
+					inputVariable.getClassName()), 
+					inputVariable.getName())
 					.build();
 			mSpecBuilder.addParameter(parameterSpec);
 		}

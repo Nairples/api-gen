@@ -38,7 +38,7 @@
                             "throws": ["IllegalArgumentException"],
                             "inputVariables": [{
                                     "name": "",
-                                    "type": ""
+                                    "className": ""
                                 }
                             ]
                         }

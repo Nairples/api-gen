@@ -25,7 +25,7 @@ public class GeneratorControllerService {
 		
 		ClassDefinition classService = classDefinition
 				.toBuilder()
-				.packageName("controller")
+				.packageName(context.getPackageName()+".controller")
 				.name(classDefinition.getName()+"Controller")
 				.clearAnnotations()
 				.annotation(Annotation
@@ -50,7 +50,7 @@ public class GeneratorControllerService {
 						.className(classDefinitionService.getName())
 						.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinitionService.getName()))
 						.accessModifier(Modifier.PRIVATE.name().toLowerCase())
-						.packageName(context.getPackageName()+"."+classDefinitionService.getPackageName())
+						.packageName(classDefinitionService.getPackageName())
 						.annotation(Annotation
 								.builder()
 								.name("Autowired")

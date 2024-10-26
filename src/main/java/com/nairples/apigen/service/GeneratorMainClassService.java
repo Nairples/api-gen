@@ -29,12 +29,13 @@ public class GeneratorMainClassService {
 	public void generateMainClass( GenerationContext context) throws ClassNotFoundException, IOException {
 		String className = context.getDomainName()+"Application";
 		
-		InputVariable inputParam = new InputVariable();
-		inputParam.setName("args");
-		inputParam.setType("String[]");
+		InputVariable inputParam = InputVariable.builder()
+				.name("args")
+				.className("String[]")
+				.build();
 		ClassDefinition mainClassDefinition = ClassDefinition.builder()
 				.name(className)
-				.packageName("")
+				.packageName(context.getPackageName())
 				.annotation(Annotation.builder()
 						.packageName("org.springframework.boot.autoconfigure")
 						.name("SpringBootApplication")
@@ -49,7 +50,7 @@ public class GeneratorMainClassService {
 								.code("$T.run($L.class, args);")
 								.arguments(new Object[]{SpringApplication.class, className})
 								.build())
-						.returnType("void")
+						.returnType(ClassDefinition.builder().name("void").build())
 						.inputVariables(Collections.singletonList(inputParam ))
 						.build()
 						)

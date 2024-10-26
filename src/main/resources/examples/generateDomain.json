@@ -45,7 +45,7 @@
                 "throws": ["IllegalArgumentException"],
                 "inputVariables": [{
                         "name": "discountPercentage",
-                        "type": "Double"
+                        "className": "Double"
                     }
                 ]
             }

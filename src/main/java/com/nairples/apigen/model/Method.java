@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class Method {
     private String name;
-    private String returnType;
+    private ClassDefinition returnType;
     private String accessModifier;
     private boolean isStatic;
     private boolean isFinal;

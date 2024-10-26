@@ -39,11 +39,11 @@ public class GeneratorDomainService {
 		mainGenerator.generateMainClass(context);
 		
 		for (ClassDefinition classDefinition : domain.getClasses()) {
-			classDefinition.setPackageName("model");
+			classDefinition.setPackageName(context.getPackageName()+".model");
 			classGenerator.generateClass(context, classDefinition);
 			ClassDefinition dbEntity = dbEntityService.generateDBEntity(context, classDefinition);
-			repositoryGenerator.generateRepositoryInterface(context, dbEntity);
-			ClassDefinition classService = serviceGenerator.generateServiceClass(context, classDefinition, dbEntity);
+			ClassDefinition repositoryInterface = repositoryGenerator.generateRepositoryInterface(context, dbEntity);
+			ClassDefinition classService = serviceGenerator.generateServiceClass(context, classDefinition, dbEntity, repositoryInterface);
 			controllerGenerator.generateControllerClass(context, classDefinition, classService);
 		}
 

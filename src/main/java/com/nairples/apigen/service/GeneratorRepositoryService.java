@@ -17,13 +17,12 @@ public class GeneratorRepositoryService {
 	@Autowired
 	GeneratorClassService classGenerator;
 
-	public void generateRepositoryInterface(GenerationContext context, ClassDefinition classDefinition) throws IOException, ClassNotFoundException {
+	public ClassDefinition generateRepositoryInterface(GenerationContext context, ClassDefinition classDefinition) throws IOException, ClassNotFoundException {
 
-		String packageName = context.getPackageName();
 		ClassDefinition repositoryInterface = classDefinition
 				.toBuilder()
 				.type("interface")
-				.packageName("repository")
+				.packageName(context.getPackageName()+".repository")
 				.name(classDefinition.getName()+"Repository")
 				.accessModifier(Modifier.PUBLIC.name().toLowerCase())
 				.clearAnnotations()
@@ -35,7 +34,7 @@ public class GeneratorRepositoryService {
 						.packageName("org.springframework.data.jpa.repository")
 						.generic(ClassDefinition.builder()
 								.name(classDefinition.getName())
-								.packageName(packageName+"."+classDefinition.getPackageName())
+								.packageName(classDefinition.getPackageName())
 								.build())
 						.generic(ClassDefinition.builder()
 								.name("Long")
@@ -48,6 +47,8 @@ public class GeneratorRepositoryService {
 						.build())
 				.build();
 		classGenerator.generateClass(context, repositoryInterface);
+		
+		return repositoryInterface;
 
 	}
 
