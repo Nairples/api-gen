@@ -26,6 +26,7 @@ public class GeneratorDBEntityService {
 				.packageName("entity")
 				.name(classDefinition.getName()+"Entity")
 				.clearAnnotations()
+				.clearMethods()
 				.annotation(Annotation.builder()
 						.packageName("jakarta.persistence")
 						.name("Entity")

@@ -13,6 +13,8 @@ import org.springframework.javapoet.FieldSpec.Builder;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.ParameterSpec;
+import org.springframework.javapoet.ParameterizedTypeName;
+import org.springframework.javapoet.TypeName;
 import org.springframework.javapoet.TypeSpec;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -37,8 +39,15 @@ public class GeneratorClassService extends Generator {
     }
 
     public void generateClass(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
-    	TypeSpec.Builder classBuilder = TypeSpec.classBuilder(classDefinition.getName())
-				.addModifiers(getAccessModifier(classDefinition));
+    	TypeSpec.Builder classBuilder = null;
+    	
+    	if ("interface".equals(classDefinition.getType())) {
+    		classBuilder = TypeSpec.interfaceBuilder(classDefinition.getName()).addModifiers(getAccessModifier(classDefinition));
+			
+    	} else {
+    		classBuilder = TypeSpec.classBuilder(classDefinition.getName())
+					.addModifiers(getAccessModifier(classDefinition));
+    	}
     	addFields(classDefinition, classBuilder);
 		addMethods(classDefinition, classBuilder);
 		addAnnotations(classDefinition, classBuilder);
@@ -48,14 +57,27 @@ public class GeneratorClassService extends Generator {
 		if(classDefinition.isFinal()) {
 			classBuilder.modifiers.add(Modifier.FINAL);
 		}		
-		if(StringUtils.hasLength(classDefinition.getExtendsClass())) {
-			classBuilder.superclass(ClassName.get("", classDefinition.getExtendsClass()));
+		if(classDefinition.getExtendsClass() != null) {
+			classBuilder.superclass(ClassName.get(classDefinition.getExtendsClass().getPackageName(), classDefinition.getExtendsClass().getName()));
 		}
 		
 		if(classDefinition.getImplementsInterfaces() != null && !classDefinition.getImplementsInterfaces().isEmpty()) {
-			for(String interfaceToImpl: classDefinition.getImplementsInterfaces()) {
-				if(StringUtils.hasLength(interfaceToImpl)) {
-					classBuilder.addSuperinterface(ClassName.get("", interfaceToImpl));
+			for(ClassDefinition interfaceToImpl: classDefinition.getImplementsInterfaces()) {
+				
+				if(interfaceToImpl.getGenerics() != null && !interfaceToImpl.getGenerics().isEmpty()) {
+					ClassName types[] = new ClassName[interfaceToImpl.getGenerics().size()];
+					
+					for (int i = 0; i < interfaceToImpl.getGenerics().size(); i++) {
+						ClassDefinition generic = interfaceToImpl.getGenerics().get(i);
+						types[i] = ClassName.get(generic.getPackageName(), generic.getName());
+						
+					}
+					
+					classBuilder.addSuperinterface(ParameterizedTypeName.get(
+		                    ClassName.get(interfaceToImpl.getPackageName(), interfaceToImpl.getName()),types));
+				} else {
+					classBuilder.addSuperinterface(
+		                    ClassName.get(interfaceToImpl.getPackageName(), interfaceToImpl.getName()));
 				}
 			}
 		}

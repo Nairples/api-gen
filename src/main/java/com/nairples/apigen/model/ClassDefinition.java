@@ -16,9 +16,9 @@ public class ClassDefinition {
     private boolean noArgsConstructor;
     private boolean fieldsConstructor;
     private String accessModifier;
-    private String extendsClass;
+    private ClassDefinition extendsClass;
     @Singular
-    private List<String> implementsInterfaces;
+    private List<ClassDefinition> implementsInterfaces;
     @Singular
     private List<Field> fields;
     @Singular
@@ -26,6 +26,9 @@ public class ClassDefinition {
     private String packageName;
     @Singular
     private List<Annotation> annotations;
+    
+    @Singular
+	private List<ClassDefinition> generics;
     
 }
 

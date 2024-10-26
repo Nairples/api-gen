@@ -22,7 +22,7 @@ import com.nairples.apigen.util.GenerationContext;
 class GeneratorRepositoryServiceTest {
 
    private ApiGenConfig apiGenConfig = new ApiGenConfig();
-    GeneratorRepositoryService generatorRepositoryService = new GeneratorRepositoryService(apiGenConfig);
+    GeneratorRepositoryService generatorRepositoryService = new GeneratorRepositoryService();
 
     @AfterAll
     static void tearDown() throws IOException {
@@ -31,7 +31,7 @@ class GeneratorRepositoryServiceTest {
     }
 
     @Test
-    void testGenerateRepositoryInterface_validSimpleClassName() throws IOException {
+    void testGenerateRepositoryInterface_validSimpleClassName() throws IOException, ClassNotFoundException {
 
         ClassDefinition classDefinition = ClassDefinition
         		.builder()
@@ -47,7 +47,7 @@ class GeneratorRepositoryServiceTest {
     }
 
     @Test
-    void testGenerateRepositoryInterface_validComplexClassName() throws IOException {
+    void testGenerateRepositoryInterface_validComplexClassName() throws IOException, ClassNotFoundException {
 
         ClassDefinition classDefinition = ClassDefinition
         		.builder()
@@ -62,7 +62,7 @@ class GeneratorRepositoryServiceTest {
     }
 
     @Test
-    void testGenerateRepositoryInterface_nestedPackageName() throws IOException {
+    void testGenerateRepositoryInterface_nestedPackageName() throws IOException, ClassNotFoundException {
 
         ClassDefinition classDefinition = ClassDefinition
         		.builder()
@@ -78,7 +78,7 @@ class GeneratorRepositoryServiceTest {
     }
 
     @Test
-    void testGenerateRepositoryInterface_noMethods() throws IOException {
+    void testGenerateRepositoryInterface_noMethods() throws IOException, ClassNotFoundException {
         // Arrange
         ClassDefinition classDefinition = ClassDefinition
         		.builder()
@@ -94,7 +94,7 @@ class GeneratorRepositoryServiceTest {
     }
     
     @Test
-    void testGenerateRepositoryInterface_classWithConstructor() throws IOException {
+    void testGenerateRepositoryInterface_classWithConstructor() throws IOException, ClassNotFoundException {
         // Arrange
         ClassDefinition classDefinition = ClassDefinition
         		.builder()
