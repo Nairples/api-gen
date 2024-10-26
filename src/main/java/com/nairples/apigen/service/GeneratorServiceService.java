@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.nairples.apigen.model.Annotation;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.CodeBlock;
 import com.nairples.apigen.model.Field;
 import com.nairples.apigen.model.InputVariable;
 import com.nairples.apigen.model.Method;
@@ -59,6 +60,21 @@ public class GeneratorServiceService {
 								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
 								.build()))
 						.returnType(dbEntity)
+						.code(CodeBlock
+								.builder()
+								.build())
+						.build())
+				.method(Method
+						.builder()
+						.accessModifier(Modifier.PRIVATE.name().toLowerCase())
+						.name("convertToModel")
+						.inputVariables(Collections.singletonList(InputVariable
+								.builder()
+								.className(dbEntity.getName())
+								.packageName(dbEntity.getPackageName())
+								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
+								.build()))
+						.returnType(classDefinition)
 						.build())
 				.build();
 		classGenerator.generateClass(context, classService);

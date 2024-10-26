@@ -156,6 +156,7 @@ public class GeneratorClassService extends Generator {
 					.build();
 			Method setMethod = Method
 					.builder()
+					.accessModifier(Modifier.PUBLIC.name().toLowerCase())
 					.name("set"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("this."+field.getName()+" = " + field.getName()+"; \n").build())
 					.inputVariables(List.of(fieldInput))
@@ -174,6 +175,7 @@ public class GeneratorClassService extends Generator {
 					.build();
 			Method getMethod = Method
 					.builder()
+					.accessModifier(Modifier.PUBLIC.name().toLowerCase())
 					.name("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("return "+field.getName()+";\n").build())
 					.inputVariables(List.of(fieldInput))
@@ -204,7 +206,7 @@ public class GeneratorClassService extends Generator {
 	private void addMethod(ArrayList<MethodSpec> methods, Method method) {
 		org.springframework.javapoet.MethodSpec.Builder mSpecBuilder = MethodSpec.methodBuilder(method.getName())
 				.returns(ClassName.get(method.getReturnType().getPackageName() != null ? method.getReturnType().getPackageName() : "", method.getReturnType().getName()))
-				.addModifiers(Modifier.PUBLIC);
+				.addModifiers(getAccessModifier(method.getAccessModifier()));
 		
 		if(method.getCode() != null && method.getCode().getArguments() != null) {
 			mSpecBuilder.addCode(method.getCode() != null ? method.getCode().getCode() : "return null;\n", method.getCode().getArguments());
