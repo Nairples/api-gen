@@ -100,7 +100,7 @@ public class GeneratorClassService extends Generator {
 		if (classDefinition.getFields() != null) {
 			for (Field field : classDefinition.getFields()) {
 				Builder fieldSpecBuilder = FieldSpec
-						.builder(ClassName.get("", field.getType()), field.getName());
+						.builder(ClassName.get(field.getPackageName() != null ? field.getPackageName() : "", field.getClassName()), field.getName());
 				
 				if( StringUtils.hasLength(field.getAccessModifier())){
 					fieldSpecBuilder.addModifiers(getAccessModifier(field.getAccessModifier()));
@@ -156,7 +156,7 @@ public class GeneratorClassService extends Generator {
 			}
 			InputVariable fieldInput = new InputVariable();
 			fieldInput.setName(field.getName());
-			fieldInput.setType(field.getType());
+			fieldInput.setType(field.getClassName());
 			Method setMethod = Method
 					.builder()
 					.name("set"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
@@ -173,13 +173,13 @@ public class GeneratorClassService extends Generator {
 		if(field.isGet()) {
 			InputVariable fieldInput = new InputVariable();
 			fieldInput.setName(field.getName());
-			fieldInput.setType(field.getType());
+			fieldInput.setType(field.getClassName());
 			Method getMethod = Method
 					.builder()
 					.name("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("return "+field.getName()+";\n").build())
 					.inputVariables(List.of(fieldInput))
-					.returnType(field.getType())
+					.returnType(field.getClassName())
 					.build();
 			if(classDefinition.getMethods() == null) {
 				classDefinition.setMethods(new ArrayList<>());

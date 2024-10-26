@@ -70,7 +70,7 @@ class GeneratorClassServiceTest {
         Field field = Field
         		.builder()
         		.name("id")
-        		.type("java.lang.Integer")
+        		.className("java.lang.Integer")
         		.accessModifier(Modifier.PRIVATE.toString())
         		.build();
         ClassDefinition classDefinition = ClassDefinition
@@ -170,7 +170,7 @@ class GeneratorClassServiceTest {
         Field field = Field
         		.builder()
         		.name("invalidField")
-        		.type("non.existent.ClassType")
+        		.className("non.existent.ClassType")
         		.build();
         
         ClassDefinition classDefinition = ClassDefinition

@@ -47,13 +47,14 @@ public class GeneratorControllerService {
 				.clearFields()
 				.clearImplementsInterfaces()
 				.field(Field.builder()
-						.type(classDefinitionService.getName())
+						.className(classDefinitionService.getName())
 						.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinitionService.getName()))
 						.accessModifier(Modifier.PRIVATE.name().toLowerCase())
+						.packageName(context.getPackageName()+"."+classDefinitionService.getPackageName())
 						.annotation(Annotation
 								.builder()
 								.name("Autowired")
-								.packageName("org.springframework.web.bind.annotation")
+								.packageName("org.springframework.beans.factory.annotation")
 								.build())
 						.build())
 				.build();

@@ -10,12 +10,13 @@ import lombok.Singular;
 @Builder(toBuilder = true)
 public class Field {
     private String name;
-    private String type;
+    private String className;
     private boolean isStatic;
     private boolean isFinal;
     private String accessModifier;
     private boolean get;
     private boolean set;
+    private String packageName;
     @Singular
     private List<Annotation> annotations;
 }
