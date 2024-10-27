@@ -2,6 +2,7 @@ package com.nairples.apigen.service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
@@ -26,6 +27,10 @@ public class GeneratorServiceService {
 	
 
 	public ClassDefinition generateServiceClass(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity, ClassDefinition repositoryInterface) throws IOException, ClassNotFoundException {
+		String repositoryInstance = CustomStringUtils.uncapitalizeFirstLetter(repositoryInterface.getName());
+		String dbEntityInstance = CustomStringUtils.uncapitalizeFirstLetter(dbEntity.getName());
+		String classDefinitionInstance = CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName());
+		
 		ClassDefinition classService = classDefinition
 				.toBuilder()
 				.packageName(context.getPackageName()+".service")
@@ -40,7 +45,7 @@ public class GeneratorServiceService {
 						.build())
 				.field(Field.builder()
 						.className(repositoryInterface.getName())
-						.name(CustomStringUtils.uncapitalizeFirstLetter(repositoryInterface.getName()))
+						.name(repositoryInstance)
 						.accessModifier(Modifier.PRIVATE.name().toLowerCase())
 						.packageName(repositoryInterface.getPackageName())
 						.annotation(Annotation
@@ -57,12 +62,12 @@ public class GeneratorServiceService {
 								.builder()
 								.className(classDefinition.getName())
 								.packageName(classDefinition.getPackageName())
-								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
+								.name(classDefinitionInstance)
 								.build()))
 						.returnType(dbEntity)
-						.code(CodeBlock
+						/*.code(CodeBlock
 								.builder()
-								.build())
+								.build())*/
 						.build())
 				.method(Method
 						.builder()
@@ -72,8 +77,60 @@ public class GeneratorServiceService {
 								.builder()
 								.className(dbEntity.getName())
 								.packageName(dbEntity.getPackageName())
-								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
+								.name(classDefinitionInstance)
 								.build()))
+						.returnType(classDefinition)
+						.build())
+				.method(Method
+						.builder()
+						.accessModifier(Modifier.PUBLIC.name().toLowerCase())
+						.name("save"+classDefinition.getName())
+						.inputVariables(Collections.singletonList(InputVariable
+								.builder()
+								.className(classDefinition.getName())
+								.packageName(classDefinition.getPackageName())
+								.name(classDefinitionInstance)
+								.build()))
+						.returnType(classDefinition)
+						.code(CodeBlock
+								.builder()
+								.code(dbEntity.getName()+" "+dbEntityInstance+ " = convertToEntity("+classDefinitionInstance+");\n"
+										+ dbEntityInstance+" = " + repositoryInstance+".save("+dbEntityInstance+");\n"
+										+ classDefinition.getName()+" saved"+classDefinition.getName()+ " = convertToModel("+dbEntityInstance+");\n"
+										+ "return saved"+classDefinition.getName()+";")
+								.build())
+						.build())
+				.method(Method
+						.builder()
+						.accessModifier(Modifier.PUBLIC.name().toLowerCase())
+						.name("delete"+classDefinition.getName())
+						.inputVariables(Collections.singletonList(InputVariable
+								.builder()
+								.className("Long")
+								.packageName("")
+								.name("id")
+								.build()))
+						.returnType(ClassDefinition.builder().name("void").build())
+						.code(CodeBlock.builder().code(repositoryInstance+".deleteById(id);").build())
+						.build())
+				.method(Method
+						.builder()
+						.accessModifier(Modifier.PUBLIC.name().toLowerCase())
+						.name("update"+classDefinition.getName())
+						.inputVariables(List.of(
+								InputVariable
+								.builder()
+								.className("Long")
+								.packageName("")
+								.name("id")
+								.build(),
+								InputVariable
+								.builder()
+								.className(classDefinition.getName())
+								.packageName(classDefinition.getPackageName())
+								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
+								.build()
+								))
 						.returnType(classDefinition)
 						.build())
 				.build();
