@@ -169,16 +169,16 @@ public class GeneratorClassService extends Generator {
 	private void generateGetter(ClassDefinition classDefinition, Field field) {
 		
 		if(field.isGet()) {
-			InputVariable fieldInput = InputVariable
+			/*InputVariable fieldInput = InputVariable
 					.builder().name(field.getName())
 					.className(field.getClassName())
-					.build();
+					.build();*/
 			Method getMethod = Method
 					.builder()
 					.accessModifier(Modifier.PUBLIC.name().toLowerCase())
 					.name("get"+CustomStringUtils.capitalizeFirstLetter(field.getName().toLowerCase()))
 					.code(CodeBlock.builder().code("return "+field.getName()+";\n").build())
-					.inputVariables(List.of(fieldInput))
+					//.inputVariables(List.of(fieldInput))
 					.returnType(ClassDefinition.builder().name(field.getClassName()).build())
 					.build();
 			if(classDefinition.getMethods() == null) {
@@ -214,12 +214,14 @@ public class GeneratorClassService extends Generator {
 			mSpecBuilder.addCode(method.getCode() != null ? method.getCode().getCode() : "return null;\n");
 		}
 		
-		for (InputVariable inputVariable : method.getInputVariables()) {
-			ParameterSpec parameterSpec = ParameterSpec.builder(ClassName.get(inputVariable.getPackageName() != null ? inputVariable.getPackageName(): "", 
-					inputVariable.getClassName()), 
-					inputVariable.getName())
-					.build();
-			mSpecBuilder.addParameter(parameterSpec);
+		if( method.getInputVariables() != null) {
+			for (InputVariable inputVariable : method.getInputVariables()) {
+				ParameterSpec parameterSpec = ParameterSpec.builder(ClassName.get(inputVariable.getPackageName() != null ? inputVariable.getPackageName(): "", 
+						inputVariable.getClassName()), 
+						inputVariable.getName())
+						.build();
+				mSpecBuilder.addParameter(parameterSpec);
+			}
 		}
 		
 		methods.add(mSpecBuilder.build());

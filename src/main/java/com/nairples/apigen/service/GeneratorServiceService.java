@@ -31,6 +31,35 @@ public class GeneratorServiceService {
 		String dbEntityInstance = CustomStringUtils.uncapitalizeFirstLetter(dbEntity.getName());
 		String classDefinitionInstance = CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName());
 		
+		
+		StringBuilder convertToEntityCode = new StringBuilder();
+        convertToEntityCode.append(dbEntity.getName()).append(" ").append(dbEntityInstance).append(" = new ").append(dbEntity.getName()).append("();\n");
+        for (Field field : classDefinition.getFields()) {
+            convertToEntityCode.append(dbEntityInstance)
+                .append(".set")
+                .append(CustomStringUtils.capitalizeFirstLetter(field.getName()))
+                .append("(")
+                .append(classDefinitionInstance)
+                .append(".get")
+                .append(CustomStringUtils.capitalizeFirstLetter(field.getName()))
+                .append("());\n");
+        }
+        convertToEntityCode.append("return ").append(dbEntityInstance).append(";");
+        
+        StringBuilder convertToModelCode = new StringBuilder();
+        convertToModelCode.append(classDefinition.getName()).append(" ").append(classDefinitionInstance).append(" = new ").append(classDefinition.getName()).append("();\n");
+        for (Field field : classDefinition.getFields()) {
+            convertToModelCode.append(classDefinitionInstance)
+                .append(".set")
+                .append(CustomStringUtils.capitalizeFirstLetter(field.getName()))
+                .append("(")
+                .append(dbEntityInstance)
+                .append(".get")
+                .append(CustomStringUtils.capitalizeFirstLetter(field.getName()))
+                .append("());\n");
+        }
+        convertToModelCode.append("return ").append(classDefinitionInstance).append(";");
+		
 		ClassDefinition classService = classDefinition
 				.toBuilder()
 				.packageName(context.getPackageName()+".service")
@@ -65,9 +94,9 @@ public class GeneratorServiceService {
 								.name(classDefinitionInstance)
 								.build()))
 						.returnType(dbEntity)
-						/*.code(CodeBlock
-								.builder()
-								.build())*/
+						.code(CodeBlock.builder()
+                                .code(convertToEntityCode.toString())
+                                .build())
 						.build())
 				.method(Method
 						.builder()
@@ -77,8 +106,11 @@ public class GeneratorServiceService {
 								.builder()
 								.className(dbEntity.getName())
 								.packageName(dbEntity.getPackageName())
-								.name(classDefinitionInstance)
+								.name(dbEntityInstance)
 								.build()))
+						.code(CodeBlock.builder()
+                                .code(convertToModelCode.toString())
+                                .build())
 						.returnType(classDefinition)
 						.build())
 				.method(Method
@@ -131,6 +163,13 @@ public class GeneratorServiceService {
 								.name(CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName()))
 								.build()
 								))
+						.code(CodeBlock.builder()
+                                .code("// Implement logic to update entity here\n"
+                                        + dbEntity.getName() + " " + dbEntityInstance + " = " + repositoryInstance + ".findById(id).orElseThrow();\n"
+                                        + "/* Set updated fields from input to dbEntity instance */\n"
+                                        + dbEntityInstance + " = " + repositoryInstance + ".save(" + dbEntityInstance + ");\n"
+                                        + "return convertToModel(" + dbEntityInstance + ");")
+                                .build())
 						.returnType(classDefinition)
 						.build())
 				.build();
