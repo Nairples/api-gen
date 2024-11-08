@@ -146,6 +146,22 @@ public class GeneratorServiceService {
 						.code(CodeBlock.builder().code(repositoryInstance+".deleteById(id);").build())
 						.build())
 				.method(Method
+					    .builder()
+					    .accessModifier(Modifier.PUBLIC.name().toLowerCase())
+					    .name("find" + classDefinition.getName() + "ById")
+					    .inputVariables(Collections.singletonList(InputVariable
+					            .builder()
+					            .className("Long")
+					            .packageName("")
+					            .name("id")
+					            .build()))
+					    .returnType(classDefinition)
+					    .code(CodeBlock.builder()
+					            .code(dbEntity.getName() + " " + dbEntityInstance + " = " + repositoryInstance + ".findById(id).orElseThrow();\n" +
+					                  "return convertToModel(" + dbEntityInstance + ");")
+					            .build())
+					    .build())
+				.method(Method
 						.builder()
 						.accessModifier(Modifier.PUBLIC.name().toLowerCase())
 						.name("update"+classDefinition.getName())

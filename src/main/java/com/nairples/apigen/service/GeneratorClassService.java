@@ -208,6 +208,14 @@ public class GeneratorClassService extends Generator {
 				.returns(ClassName.get(method.getReturnType().getPackageName() != null ? method.getReturnType().getPackageName() : "", method.getReturnType().getName()))
 				.addModifiers(getAccessModifier(method.getAccessModifier()));
 		
+		
+		if(method.getAnnotations() != null ) {
+			for (Annotation annotation : method.getAnnotations()) {
+				AnnotationSpec annotationSpec = buildAnnotationSpec(annotation);
+				mSpecBuilder.addAnnotation(annotationSpec);
+			}
+		}
+		
 		if(method.getCode() != null && method.getCode().getArguments() != null) {
 			mSpecBuilder.addCode(method.getCode() != null ? method.getCode().getCode() : "return null;\n", method.getCode().getArguments());
 		} else {
@@ -225,6 +233,19 @@ public class GeneratorClassService extends Generator {
 		}
 		
 		methods.add(mSpecBuilder.build());
+	}
+
+	private AnnotationSpec buildAnnotationSpec(Annotation annotation) {
+		AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get(annotation.getPackageName(), annotation.getName())).build();
+		if(annotation.getMembers() != null) {
+			for (AnnotationMember annotationMember : annotation.getMembers()) {
+				annotationSpec = annotationSpec
+						.toBuilder()
+						.addMember(annotationMember.getMemberName(),  "$S", annotationMember.getMemberValue())
+						.build();
+			}
+		}
+		return annotationSpec;
 	}
     
     

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 @Data
 @Builder
@@ -16,4 +17,6 @@ public class Method {
     private List<String> throwsList;
     private List<InputVariable> inputVariables;
     private CodeBlock code;
+    @Singular
+    private List<Annotation> annotations;
 }
