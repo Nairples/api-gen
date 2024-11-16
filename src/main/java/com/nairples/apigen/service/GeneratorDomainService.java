@@ -57,11 +57,16 @@ public class GeneratorDomainService {
 			ClassDefinition classService = serviceGenerator.generate(context, classDefinition, dbEntity, repositoryInterface);
 			controllerGenerator.generate(context, classDefinition, classService);
 		}
+		
+		if(configurations == null) {
+			configurations = new Configurations();
+			configurations.setH2Database(true);
+		}
 
 		pomGenerator.generate(context, domain, configurations);
 		
-		Properties properties = new Properties();
-		appPropertiesGenerator.generate(context, properties);
+		
+		appPropertiesGenerator.generate(context, configurations);
 		
 	}
 

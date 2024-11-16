@@ -55,6 +55,14 @@ public class GeneratorPomService extends Generator {
 		mavenConfiguration.setProperties(properties );
 
 		List<MavenConfiguration.Dependency> dependencies = getDependencyList();
+		
+		if(configurations != null & configurations.isH2Database()) {
+			com.nairples.apigen.model.MavenConfiguration.Dependency h2Dependency = new com.nairples.apigen.model.MavenConfiguration.Dependency();
+			h2Dependency.setArtifactId("h2");
+			h2Dependency.setGroupId("com.h2database");
+			h2Dependency.setScope("runtime");
+			dependencies.add(h2Dependency );
+		}
 		mavenConfiguration.setDependencies(dependencies );
 		generatePomXmlFile(context, mavenConfiguration);
 		

@@ -11,4 +11,5 @@ public class Configurations {
     private boolean springCloudConfig;
     private boolean zipkin;
     private boolean actuator;
+    private boolean h2Database;
 }
