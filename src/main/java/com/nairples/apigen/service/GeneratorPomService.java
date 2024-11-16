@@ -13,6 +13,7 @@ import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.Configurations;
 import com.nairples.apigen.model.Domain;
 import com.nairples.apigen.model.MavenConfiguration;
+import com.nairples.apigen.model.MavenConfiguration.Plugin.Configuration;
 import com.nairples.apigen.model.MavenConfiguration.Properties;
 import com.nairples.apigen.pom.Build;
 import com.nairples.apigen.pom.Dependency;
@@ -35,7 +36,7 @@ public class GeneratorPomService extends Generator {
 	public void generate(GenerationContext context, Domain domain, Configurations configurations) {
 		
 		MavenConfiguration mavenConfiguration = new MavenConfiguration();
-		mavenConfiguration.setArtifactId(domain.getName());
+		mavenConfiguration.setArtifactId(domain.getName().toLowerCase());
 		mavenConfiguration.setGroupId(domain.getPackageName());
 		mavenConfiguration.setVersion("0.0.1-SNAPSHOT");
 		mavenConfiguration.setDescription(domain.getDescription());
@@ -44,6 +45,9 @@ public class GeneratorPomService extends Generator {
 		com.nairples.apigen.model.MavenConfiguration.Plugin pl = new com.nairples.apigen.model.MavenConfiguration.Plugin();
 		pl.setGroupId("org.springframework.boot");
 		pl.setArtifactId("spring-boot-maven-plugin");
+		Configuration configuration = new Configuration();
+		configuration.setMainClass(context.getPackageName()+"."+context.getMainClassName());
+		pl.setConfiguration(configuration);
 		plugins.add(pl);
 		mavenConfiguration.setPlugins(plugins );
 		Properties properties = new Properties();
@@ -118,6 +122,7 @@ public class GeneratorPomService extends Generator {
 			}
 
 
+			
 			Project project = projectBuilder.build(Build.builder()
 					.plugins(Plugins.builder()
 							.plugins(mavenConfiguration.getPlugins().stream()
@@ -125,6 +130,7 @@ public class GeneratorPomService extends Generator {
 											.groupId(plg.getGroupId())
 											.artifactId(plg.getArtifactId())
 											.version(plg.getVersion())
+											.configuration(plg.getConfiguration() != null && plg.getConfiguration().getMainClass() != null ? com.nairples.apigen.pom.Configuration.builder().mainClass(plg.getConfiguration().getMainClass()).build() : null )
 											.build()
 									).toList()
 							).build()
@@ -134,10 +140,11 @@ public class GeneratorPomService extends Generator {
 			Marshaller marshaller = jaxBContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
-					"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd");
+					"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd");
 			marshaller.marshal(project, new File(getPath(context) + "pom.xml"));
 		}catch (Exception e){
 			//TODO
+			e.printStackTrace();
 		}
 
 	}

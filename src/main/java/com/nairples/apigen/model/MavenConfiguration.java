@@ -27,6 +27,8 @@ public class MavenConfiguration {
         private String version;
         private String scope; // e.g., compile, test, provided, etc.
     }
+    
+    
 
     @Data
     public static class Plugin {
@@ -34,6 +36,12 @@ public class MavenConfiguration {
         private String artifactId;
         private String version;
         private List<PluginExecution> executions;
+        private Configuration configuration;
+        
+        @Data
+        public static class Configuration {
+        	private String mainClass; 
+        }
 
         @Data
         public static class PluginExecution {

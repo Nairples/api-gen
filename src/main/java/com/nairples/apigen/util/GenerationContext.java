@@ -28,5 +28,9 @@ public class GenerationContext {
         		.projectName("")
         		.build();
 	}
+	
+	public String getMainClassName() {
+		return getDomainName()+"Application";
+	}
 
 }

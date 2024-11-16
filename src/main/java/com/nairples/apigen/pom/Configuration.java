@@ -1,7 +1,5 @@
 package com.nairples.apigen.pom;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,24 +10,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@XmlRootElement(name = "plugin")
+@XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Plugin {
-
-    @XmlElement(name = "groupId")
-    private String groupId;
-
-    @XmlElement(name = "artifactId")
-    private String artifactId;
-
-    @XmlElement(name = "version")
-    private String version;
-    
-    @XmlElement(name = "configuration")
-    private Configuration configuration;
+public class Configuration {
+	
+	@XmlElement(name = "mainClass")
+	private String mainClass;
 
 }

@@ -53,7 +53,6 @@ public class GeneratorController {
 					e.printStackTrace();
 				}
 				return new ResponseEntity<>("", HttpStatus.CREATED);
-				
 			}
 		}
 		

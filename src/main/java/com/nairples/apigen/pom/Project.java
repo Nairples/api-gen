@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@XmlRootElement(name = "project")
+@XmlRootElement(name = "project", namespace = "http://maven.apache.org/POM/4.0.0")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 @Builder
@@ -21,42 +21,42 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Project {
 
-    @XmlElement(name = "modelVersion")
+    @XmlElement(name = "modelVersion", namespace = "http://maven.apache.org/POM/4.0.0")
     private String modelVersion = "4.0.0";
 
-    @XmlElement(name = "groupId")
+    @XmlElement(name = "groupId", namespace = "http://maven.apache.org/POM/4.0.0")
     private String groupId;
 
 
-    @XmlElement(name = "artifactId")
+    @XmlElement(name = "artifactId", namespace = "http://maven.apache.org/POM/4.0.0")
     private String artifactId;
 
-    @XmlElement(name = "version")
+    @XmlElement(name = "version", namespace = "http://maven.apache.org/POM/4.0.0")
     private String version;
 
-    @XmlElement(name = "packaging")
+    @XmlElement(name = "packaging", namespace = "http://maven.apache.org/POM/4.0.0")
     private String packaging;
 
-    @XmlElement(name = "name")
+    @XmlElement(name = "name", namespace = "http://maven.apache.org/POM/4.0.0")
     private String name;
 
-    @XmlElement(name = "description")
+    @XmlElement(name = "description", namespace = "http://maven.apache.org/POM/4.0.0")
     private String description;
 
-    @XmlElement(name = "url")
+    @XmlElement(name = "url", namespace = "http://maven.apache.org/POM/4.0.0")
     private String url;
 
-    @XmlElement(name = "parent")
+    @XmlElement(name = "parent", namespace = "http://maven.apache.org/POM/4.0.0")
     private Parent parent;
 
-    @XmlElementWrapper(name = "dependencies")
+    @XmlElementWrapper(name = "dependencies", namespace = "http://maven.apache.org/POM/4.0.0")
     @XmlElement(name = "dependency")
     private List<Dependency> dependencies;
 
-    @XmlElement(name = "build")
+    @XmlElement(name = "build", namespace = "http://maven.apache.org/POM/4.0.0")
     private Build build;
     
-    @XmlElement(name = "properties")
+    @XmlElement(name = "properties", namespace = "http://maven.apache.org/POM/4.0.0")
     private Properties properties;
 
 }
