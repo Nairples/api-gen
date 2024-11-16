@@ -22,7 +22,7 @@ API Gen is a Spring Boot application designed to generate microservice architect
 
 1. Clone the repository:
    
-   git clone https://github.com/username/api-gen.git
+   git clone [https://github.com/username/api-gen.git](https://github.com/Nairples/api-gen.git)
    
 2. Navigate to the project directory:
 
