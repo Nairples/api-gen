@@ -56,7 +56,9 @@ public class GeneratorClassService extends Generator {
 		}		
 		if(classDefinition.isFinal()) {
 			classBuilder.modifiers.add(Modifier.FINAL);
-		}		
+		
+		}
+		
 		if(classDefinition.getExtendsClass() != null) {
 			classBuilder.superclass(ClassName.get(classDefinition.getExtendsClass().getPackageName(), classDefinition.getExtendsClass().getName()));
 		}
@@ -207,6 +209,10 @@ public class GeneratorClassService extends Generator {
 		org.springframework.javapoet.MethodSpec.Builder mSpecBuilder = MethodSpec.methodBuilder(method.getName())
 				.returns(ClassName.get(method.getReturnType().getPackageName() != null ? method.getReturnType().getPackageName() : "", method.getReturnType().getName()))
 				.addModifiers(getAccessModifier(method.getAccessModifier()));
+		
+		if(method.isStatic()) {
+			mSpecBuilder.addModifiers(Modifier.STATIC);
+		}
 		
 		
 		if(method.getAnnotations() != null ) {
