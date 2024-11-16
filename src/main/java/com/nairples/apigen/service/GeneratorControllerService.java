@@ -26,7 +26,7 @@ public class GeneratorControllerService {
 	@Autowired
 	private GeneratorClassService generatorClass;
 
-	public void generateControllerClass(GenerationContext context, ClassDefinition classDefinition,
+	public void generate(GenerationContext context, ClassDefinition classDefinition,
 			ClassDefinition classDefinitionService) throws IOException, ClassNotFoundException {
 
 		String serviceInstance = CustomStringUtils.uncapitalizeFirstLetter(classDefinitionService.getName());
@@ -104,7 +104,7 @@ public class GeneratorControllerService {
 		classController = classController.toBuilder().method(createMethod).method(getByIdMethod).method(updateMethod)
 				.method(deleteMethod).build();
 
-		generatorClass.generateClass(context, classController);
+		generatorClass.generate(context, classController);
 
 	}
 

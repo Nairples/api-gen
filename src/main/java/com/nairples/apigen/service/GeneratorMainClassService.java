@@ -26,7 +26,7 @@ public class GeneratorMainClassService {
 
 	
 	
-	public void generateMainClass( GenerationContext context) throws ClassNotFoundException, IOException {
+	public void generate( GenerationContext context) throws ClassNotFoundException, IOException {
 		String className = context.getDomainName()+"Application";
 		
 		InputVariable inputParam = InputVariable.builder()
@@ -55,7 +55,7 @@ public class GeneratorMainClassService {
 						.build()
 						)
 				.build();
-		generatorClass.generateClass(context, mainClassDefinition);
+		generatorClass.generate(context, mainClassDefinition);
 	
 	}
 }

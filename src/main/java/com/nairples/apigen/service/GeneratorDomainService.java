@@ -1,12 +1,14 @@
 package com.nairples.apigen.service;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.nairples.apigen.config.ApiGenConfig;
 import com.nairples.apigen.model.ClassDefinition;
+import com.nairples.apigen.model.Configurations;
 import com.nairples.apigen.model.Domain;
 import com.nairples.apigen.util.GenerationContext;
 
@@ -29,25 +31,38 @@ public class GeneratorDomainService {
 	private GeneratorPomService pomGenerator;
 	
 	@Autowired
+	private GeneratorApplicationPropertiesService appPropertiesGenerator;
+	
+	@Autowired
 	private GeneratorMainClassService mainGenerator;
 	
 	@Autowired
 	private GeneratorDBEntityService dbEntityService;
 	
-	public void generateDomain(GenerationContext context, Domain domain) throws ClassNotFoundException, IOException {
+	public void generate(GenerationContext context, Domain domain) throws ClassNotFoundException, IOException {
 		
-		mainGenerator.generateMainClass(context);
+		generate(context, domain, null);
+	}
+
+	public void generate(GenerationContext context, Domain domain, Configurations configurations)  throws ClassNotFoundException, IOException  {
+		// TODO Auto-generated method stub
+		
+		mainGenerator.generate(context);
 		
 		for (ClassDefinition classDefinition : domain.getClasses()) {
 			classDefinition.setPackageName(context.getPackageName()+".model");
-			classGenerator.generateClass(context, classDefinition);
-			ClassDefinition dbEntity = dbEntityService.generateDBEntity(context, classDefinition);
-			ClassDefinition repositoryInterface = repositoryGenerator.generateRepositoryInterface(context, dbEntity);
-			ClassDefinition classService = serviceGenerator.generateServiceClass(context, classDefinition, dbEntity, repositoryInterface);
-			controllerGenerator.generateControllerClass(context, classDefinition, classService);
+			classGenerator.generate(context, classDefinition);
+			ClassDefinition dbEntity = dbEntityService.generate(context, classDefinition);
+			ClassDefinition repositoryInterface = repositoryGenerator.generate(context, dbEntity);
+			ClassDefinition classService = serviceGenerator.generate(context, classDefinition, dbEntity, repositoryInterface);
+			controllerGenerator.generate(context, classDefinition, classService);
 		}
 
-		pomGenerator.generateDefaultPomFile(context, domain);
+		pomGenerator.generate(context, domain, configurations);
+		
+		Properties properties = new Properties();
+		appPropertiesGenerator.generate(context, properties);
+		
 	}
 
 }

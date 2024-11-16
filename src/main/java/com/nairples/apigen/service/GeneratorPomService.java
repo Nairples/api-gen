@@ -10,6 +10,7 @@ import javax.xml.bind.Marshaller;
 import org.springframework.stereotype.Component;
 
 import com.nairples.apigen.config.ApiGenConfig;
+import com.nairples.apigen.model.Configurations;
 import com.nairples.apigen.model.Domain;
 import com.nairples.apigen.model.MavenConfiguration;
 import com.nairples.apigen.model.MavenConfiguration.Properties;
@@ -31,7 +32,7 @@ public class GeneratorPomService extends Generator {
 	}
 
 
-	public void generateDefaultPomFile(GenerationContext context, Domain domain) {
+	public void generate(GenerationContext context, Domain domain, Configurations configurations) {
 		
 		MavenConfiguration mavenConfiguration = new MavenConfiguration();
 		mavenConfiguration.setArtifactId(domain.getName());

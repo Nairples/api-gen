@@ -37,6 +37,26 @@ public class GeneratorController {
 	
 	@PostMapping("/generate")
 	public ResponseEntity<String> generator(@RequestBody ApiGenReq request) {
+		
+		
+		if(request != null && request.getDomains() != null ) {
+			for (Domain domain : request.getDomains()) {
+				try {
+					GenerationContext context = GenerationContext.builder()
+							.domainName(domain.getName())
+							.packageName(domain.getPackageName())
+							.projectName(request.getProjectName())
+							.build();
+					domainGenerator.generate(context, domain, request.getConfigurations());
+				} catch (ClassNotFoundException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return new ResponseEntity<>("", HttpStatus.CREATED);
+				
+			}
+		}
+		
 		return new ResponseEntity<>("", HttpStatus.CREATED);
 	}
 	
@@ -49,7 +69,7 @@ public class GeneratorController {
 					.packageName(request.getPackageName())
 					.projectName("")
 					.build();
-			domainGenerator.generateDomain(context, request);
+			domainGenerator.generate(context, request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,7 +96,7 @@ public class GeneratorController {
 		
 		try {
 			GenerationContext generationContext = GenerationContext.getGenerationContext(request);
-			classGenerator.generateClass(generationContext, request);
+			classGenerator.generate(generationContext, request);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

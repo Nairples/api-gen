@@ -40,7 +40,7 @@ class GeneratorRepositoryServiceTest {
         		.build();
 
 
-        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
+        generatorRepositoryService.generate(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/model/repository/UserRepository.java")));
@@ -56,7 +56,7 @@ class GeneratorRepositoryServiceTest {
         		.build();
 
 
-        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
+        generatorRepositoryService.generate(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/complex/repository/ComplexUserRepository.java")));
     }
@@ -71,7 +71,7 @@ class GeneratorRepositoryServiceTest {
         		.build();
 
 
-        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
+        generatorRepositoryService.generate(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
 
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/business/domain/repository/OrderRepository.java")));
@@ -87,7 +87,7 @@ class GeneratorRepositoryServiceTest {
         		.build();
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
+        generatorRepositoryService.generate(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));
@@ -103,7 +103,7 @@ class GeneratorRepositoryServiceTest {
         		.build();
 
         // Act
-        generatorRepositoryService.generateRepositoryInterface(GenerationContext.getGenerationContext(classDefinition), classDefinition);
+        generatorRepositoryService.generate(GenerationContext.getGenerationContext(classDefinition), classDefinition);
 
         // Assert
         assertTrue(Files.exists(Paths.get(apiGenConfig.getOutputDirectory()+"src/main/java/com/example/store/repository/ProductRepository.java")));

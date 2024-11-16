@@ -17,7 +17,7 @@ public class GeneratorRepositoryService {
 	@Autowired
 	GeneratorClassService classGenerator;
 
-	public ClassDefinition generateRepositoryInterface(GenerationContext context, ClassDefinition classDefinition) throws IOException, ClassNotFoundException {
+	public ClassDefinition generate(GenerationContext context, ClassDefinition classDefinition) throws IOException, ClassNotFoundException {
 
 		ClassDefinition repositoryInterface = classDefinition
 				.toBuilder()
@@ -46,7 +46,7 @@ public class GeneratorRepositoryService {
 						.packageName("org.springframework.stereotype")
 						.build())
 				.build();
-		classGenerator.generateClass(context, repositoryInterface);
+		classGenerator.generate(context, repositoryInterface);
 		
 		return repositoryInterface;
 

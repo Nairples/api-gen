@@ -21,7 +21,7 @@ public class Generator {
 	}
 
 	protected void writeFile(GenerationContext context, JavaFile javaFile) throws IOException {
-		javaFile.writeTo(Paths.get(getPath(context)+"src/main/java"));
+		javaFile.writeTo(Paths.get(getJavaPath(context)));
 	}
 	
 	protected String getPath(GenerationContext context) {
@@ -33,5 +33,13 @@ public class Generator {
 			result = result + context.getDomainName() + "/";
 		}
 		return result;
+	}
+	
+	protected String getResourcesPath(GenerationContext context) {
+		return getPath(context)+"src/main/resources/";
+	}
+	
+	private String getJavaPath(GenerationContext context) {
+		return getPath(context)+"src/main/java";
 	}
 }

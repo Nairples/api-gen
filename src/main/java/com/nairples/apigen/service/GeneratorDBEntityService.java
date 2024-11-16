@@ -18,7 +18,7 @@ public class GeneratorDBEntityService {
 	@Autowired
 	private GeneratorClassService generatorClass;
 	
-	public ClassDefinition generateDBEntity(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
+	public ClassDefinition generate(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
 		
 		
 		ClassDefinition dbEntityDefinition = classDefinition
@@ -56,7 +56,7 @@ public class GeneratorDBEntityService {
 			}
 		}
 		
-		generatorClass.generateClass(context, dbEntityDefinition);
+		generatorClass.generate(context, dbEntityDefinition);
 		
 		return dbEntityDefinition;
 		

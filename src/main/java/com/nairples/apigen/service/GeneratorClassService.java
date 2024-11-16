@@ -38,7 +38,7 @@ public class GeneratorClassService extends Generator {
         super(apiGenConfig);
     }
 
-    public void generateClass(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
+    public void generate(GenerationContext context, ClassDefinition classDefinition) throws ClassNotFoundException, IOException {
     	TypeSpec.Builder classBuilder = null;
     	
     	if ("interface".equals(classDefinition.getType())) {

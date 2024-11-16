@@ -26,7 +26,7 @@ public class GeneratorServiceService {
 
 	
 
-	public ClassDefinition generateServiceClass(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity, ClassDefinition repositoryInterface) throws IOException, ClassNotFoundException {
+	public ClassDefinition generate(GenerationContext context, ClassDefinition classDefinition, ClassDefinition dbEntity, ClassDefinition repositoryInterface) throws IOException, ClassNotFoundException {
 		String repositoryInstance = CustomStringUtils.uncapitalizeFirstLetter(repositoryInterface.getName());
 		String dbEntityInstance = CustomStringUtils.uncapitalizeFirstLetter(dbEntity.getName());
 		String classDefinitionInstance = CustomStringUtils.uncapitalizeFirstLetter(classDefinition.getName());
@@ -189,7 +189,7 @@ public class GeneratorServiceService {
 						.returnType(classDefinition)
 						.build())
 				.build();
-		classGenerator.generateClass(context, classService);
+		classGenerator.generate(context, classService);
 		return classService;
 	}
 
