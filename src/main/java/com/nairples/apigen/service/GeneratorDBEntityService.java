@@ -45,7 +45,11 @@ public class GeneratorDBEntityService {
 		
 		
 		if(dbEntityDefinition.getFields() != null ) {
+			boolean idMissing = true;
 			for (Field field : dbEntityDefinition.getFields()) {
+				if( "id".equals(field.getName())) {
+					idMissing = false;
+				}
 				ArrayList<Annotation> annotations = new ArrayList<Annotation>();
 				annotations.add(Annotation
 						.builder()
@@ -53,6 +57,23 @@ public class GeneratorDBEntityService {
 						.name("Column")
 						.build());
 				field.setAnnotations(annotations);
+			}
+			
+			if(idMissing) {
+				Annotation annotationId = Annotation.builder()
+						.name("Id")
+						.packageName("jakarta.persistence")
+						.build(); 
+				Field field = Field.builder()
+						.name("id")
+						.className("Long")
+						.get(true)
+						.set(true)
+						.annotation(annotationId)
+						.build();
+				ArrayList<Field> fields = new ArrayList<>(dbEntityDefinition.getFields());
+				fields.add(field);
+				dbEntityDefinition.setFields(fields);
 			}
 		}
 		
